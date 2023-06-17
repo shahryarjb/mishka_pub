@@ -1,0 +1,2 @@
+defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
+end

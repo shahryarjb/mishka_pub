@@ -1,18 +1,6 @@
 defmodule MishkaPub do
-  @moduledoc """
-  Documentation for `MishkaPub`.
-  """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> MishkaPub.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def test() do
+    [1, 2, 3, 4]
+    |> Enum.map(&(&1 + 1))
   end
 end
