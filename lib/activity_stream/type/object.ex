@@ -1,2 +1,32 @@
 defmodule MishkaPub.ActivityStream.Type.Object do
+  defstruct [
+    :id,
+    :type,
+    :name,
+    :content,
+    :url,
+    :published,
+    :updated,
+    :actor,
+    :location,
+    :attachment,
+    :tag,
+    :replies,
+    :attributedTo,
+    :audience,
+    :context,
+    :endTime,
+    :generator,
+    :icon,
+    :image,
+    :inReplyTo,
+    :preview,
+    :startTime,
+    :summary,
+    :to,
+    :bto,
+    :cc,
+    :bcc,
+    :mediaType
+  ]
 end
