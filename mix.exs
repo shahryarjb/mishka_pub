@@ -5,7 +5,7 @@ defmodule MishkaPub.MixProject do
     [
       app: :mishka_pub,
       version: "0.0.1",
-      elixir: "~> 1.14",
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -22,7 +22,8 @@ defmodule MishkaPub.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:plug, "~> 1.14"}
+      {:plug, "~> 1.14"},
+      {:dialyxir, "~> 1.3", only: [:dev], runtime: false}
     ]
   end
 end
