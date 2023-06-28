@@ -1,67 +1,38 @@
 defmodule MishkaPub.ActivityStream.Type.Object do
   alias MishkaPub.ActivityStream.Validator
 
-  @type t :: %__MODULE__{
-          id: String.t(),
-          type: String.t(),
-          name: String.t(),
-          content: String.t(),
-          url: String.t(),
-          published: DateTime.t(),
-          updated: DateTime.t(),
-          actor: String.t(),
-          location: String.t(),
-          attachment: String.t(),
-          tag: String.t(),
-          replies: list(String.t()),
-          attributedTo: String.t(),
-          audience: String.t(),
-          context: String.t(),
-          endTime: DateTime.t(),
-          generator: String.t(),
-          icon: String.t(),
-          image: String.t(),
-          inReplyTo: String.t(),
-          preview: String.t(),
-          startTime: DateTime.t(),
-          summary: String.t(),
-          to: String.t(),
-          bto: String.t(),
-          cc: String.t(),
-          bcc: String.t(),
-          mediaType: String.t()
-        }
+  use TypedStruct
 
-  defstruct [
-    :id,
-    :type,
-    :name,
-    :content,
-    :url,
-    :published,
-    :updated,
-    :actor,
-    :location,
-    :attachment,
-    :tag,
-    :replies,
-    :attributedTo,
-    :audience,
-    :context,
-    :endTime,
-    :generator,
-    :icon,
-    :image,
-    :inReplyTo,
-    :preview,
-    :startTime,
-    :summary,
-    :to,
-    :bto,
-    :cc,
-    :bcc,
-    :mediaType
-  ]
+  typedstruct do
+    field :id, String.t()
+    field :type, String.t()
+    field :name, String.t()
+    field :content, String.t()
+    field :url, String.t()
+    field :published, DateTime.t()
+    field :updated, DateTime.t()
+    field :actor, String.t()
+    field :location, String.t()
+    field :attachment, String.t()
+    field :tag, String.t()
+    field :replies, list(String.t())
+    field :attributedTo, String.t()
+    field :audience, String.t()
+    field :context, String.t()
+    field :endTime, DateTime.t()
+    field :generator, String.t()
+    field :icon, String.t()
+    field :image, String.t()
+    field :inReplyTo, String.t()
+    field :preview, String.t()
+    field :startTime, DateTime.t()
+    field :summary, String.t()
+    field :to, String.t()
+    field :bto, String.t()
+    field :cc, String.t()
+    field :bcc, String.t()
+    field :mediaType, String.t()
+  end
 
   @behaviour Validator
 
@@ -69,9 +40,6 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   @spec build(t()) :: {:ok, Validator.action(), t()} | {:error, Validator.action(), any()}
   def build(%__MODULE__{} = params) do
     {:ok, :build, Map.merge(%__MODULE__{}, params)}
-  rescue
-    _e ->
-      {:ok, :build, :unexpected}
   end
 
   @impl true
@@ -79,19 +47,16 @@ defmodule MishkaPub.ActivityStream.Type.Object do
           {:ok, Validator.action(), t()} | {:error, Validator.action(), any()}
   def build(%__MODULE__{} = params, _required_params) do
     {:ok, :build, Map.merge(%__MODULE__{}, params)}
-  rescue
-    _e ->
-      {:ok, :build, :unexpected}
   end
 
   @impl true
-  @spec build(t()) :: {:ok, Validator.action(), t()} | {:error, Validator.action(), any()}
+  @spec validate(t()) :: {:ok, Validator.action(), t()} | {:error, Validator.action(), any()}
   def validate(%__MODULE__{} = params) do
     {:ok, :validate, params}
   end
 
   @impl true
-  @spec build(t(), list(String.t())) ::
+  @spec validate(t(), list(String.t())) ::
           {:ok, Validator.action(), t()} | {:error, Validator.action(), any()}
   def validate(%__MODULE__{} = params, _required_params) do
     {:ok, :validate, params}
