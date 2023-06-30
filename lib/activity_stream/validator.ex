@@ -1,27 +1,4 @@
 defmodule MishkaPub.ActivityStream.Validator do
-  # TODO: We should test domo as validator
-  @type title() :: any()
-  @type content() :: any()
-  @type url() :: any()
-  @type time() :: any()
-  @type actor() :: any()
-  @type location() :: any()
-  @type attachment() :: any()
-  @type tag() :: any()
-  @type replies() :: any()
-  @type attributedTo() :: any()
-  @type audience() :: any()
-  @type context() :: any()
-  @type generator() :: any()
-  @type icon() :: any()
-  @type image() :: any()
-  @type inReplyTo() :: any()
-  @type preview() :: any()
-  @type summary() :: any()
-  @type user_domain_address() :: any()
-  @type mediaType() :: any()
-
-
   # Based on https://elixirforum.com/t/create-behaviour-and-type-with-macro/
   @type action() :: :build | :validate
 

@@ -23,9 +23,7 @@ defmodule MishkaPub.MixProject do
   defp deps do
     [
       {:plug, "~> 1.14"},
-      {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
-      {:typed_struct, "~> 0.3.0"},
-      {:domo, "~> 1.5.3"}
+      {:dialyxir, "~> 1.3", only: [:dev], runtime: false}
     ]
   end
 end

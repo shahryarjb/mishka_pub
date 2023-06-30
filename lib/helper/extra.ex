@@ -1,4 +1,8 @@
 defmodule MishkaPub.Helper.Extra do
+  def test_function do
+    Enum.map([1, 2, 3], fn x -> IO.inspect(x) end)
+  end
+
   # def get_direction(property, value, method) do
   #   case method do
   #     :first_strong_directional_char ->
