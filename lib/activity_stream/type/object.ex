@@ -2,12 +2,23 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   alias MishkaPub.ActivityStream.Validator
   use GuardedStruct
 
-  @type name :: String.t()
-
+  # TODO: Each field can check is there any validator function inside a module or not?
+  # TODO: All the validator functions should have 2 params, field name as atom and the vlaue as any type
+  # TODO: If developer set validator alone for each field you should consider __MODULE__.validator(:id, value)
+  # TODO: If validator_module is not empty you should consider the module.validator for example
+  # TODO: Create a build function that check all entries of struct as validator function and enforce
+  # TODO: Need a function to show all enforce field
+  # TODO: We should have a function which drops none-structed fields
+  # TODO: We need a function check all the required field are sent or not, and show what field is not sent?
+  # TODO: IF a field has no type it should pass okey!! pattern
+  # TODO: The action function should pass like this {:error, :action, [{:error, :field, message}]} | {:ok, :action}
+  # TODO: Top level validator as `guardedstruct` entires,
+  # TODO: It should be able to process all the data and then send it to the validators of each field.
+  # TODO: It can find it as main_validator in the module or user can set it as `guardedstruct` validator parameter
   guardedstruct do
-    field(:id, String.t())
+    field(:id, String.t(), validator: {MishkaPub.ActivityStream.Validator, :validator})
     field(:type, String.t())
-    field(:name, name(), default: "Joe")
+    field(:name, String.t(), default: "Joe")
     field(:content, String.t())
     field(:url, String.t())
     field(:published, DateTime.t())
@@ -35,31 +46,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     field(:mediaType, String.t())
   end
 
-  @behaviour Validator
-
-  @impl true
-  @spec build(t()) :: {:ok, Validator.action(), t()} | {:error, Validator.action(), any()}
-  def build(%__MODULE__{} = params) do
-    {:ok, :build, Map.merge(%__MODULE__{}, params)}
-  end
-
-  @impl true
-  @spec build(t(), list(String.t())) ::
-          {:ok, Validator.action(), t()} | {:error, Validator.action(), any()}
-  def build(%__MODULE__{} = params, _required_params) do
-    {:ok, :build, Map.merge(%__MODULE__{}, params)}
-  end
-
-  @impl true
-  @spec validate(t()) :: {:ok, Validator.action(), t()} | {:error, Validator.action(), any()}
-  def validate(%__MODULE__{} = params) do
-    {:ok, :validate, params}
-  end
-
-  @impl true
-  @spec validate(t(), list(String.t())) ::
-          {:ok, Validator.action(), t()} | {:error, Validator.action(), any()}
-  def validate(%__MODULE__{} = params, _required_params) do
-    {:ok, :validate, params}
+  def main_validator(value) do
+    IO.inspect(value)
   end
 end

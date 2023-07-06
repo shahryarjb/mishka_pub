@@ -17,4 +17,8 @@ defmodule MishkaPub.ActivityStream.Validator do
 
   def uri(_url) do
   end
+
+  def validator(:id, _id) do
+    :ok
+  end
 end

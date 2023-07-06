@@ -1,5 +1,5 @@
 defmodule MishkaPub.ActivityStream.Plug.HeaderPlug do
-  import Plug.Conn
+  # import Plug.Conn
 
   def init(options) do
     options
