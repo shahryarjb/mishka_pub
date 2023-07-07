@@ -94,6 +94,20 @@ defmodule GuardedStruct do
       end)
 
       Module.put_attribute(__MODULE__, :gs_enforce?, unquote(!!opts[:enforce]))
+
+      main_validator = unquote(opts[:main_validator])
+
+      if !is_nil(main_validator) && is_tuple(main_validator) do
+        Module.put_attribute(__MODULE__, :gs_main_validator, main_validator)
+      end
+
+      if !is_nil(main_validator) && (!is_tuple(main_validator) or tuple_size(main_validator) != 2) do
+        raise(
+          ArgumentError,
+          "Main validator is came as a tuple and includes {module, function_name}, noted the function_name should be atom."
+        )
+      end
+
       @before_compile {unquote(__MODULE__), :create_builder}
       @before_compile {unquote(__MODULE__), :delete_temporary_revaluation}
 
