@@ -21,4 +21,8 @@ defmodule MishkaPub.ActivityStream.Validator do
   def validator(:id, _id) do
     :ok
   end
+
+  def main_validator(_value) do
+    :ok
+  end
 end

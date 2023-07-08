@@ -15,7 +15,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   # TODO: Top level validator as `guardedstruct` entires,
   # TODO: It should be able to process all the data and then send it to the validators of each field.
   # TODO: It can find it as main_validator in the module or user can set it as `guardedstruct` validator parameter
-  guardedstruct main_validator: {MishkaPub.ActivityStream.Validator, :validator} do
+  guardedstruct main_validator: {MishkaPub.ActivityStream.Validator, :main_validator} do
     field(:id, String.t(), validator: {MishkaPub.ActivityStream.Validator, :validator})
     field(:type, String.t())
     field(:name, String.t(), default: "Joe")
@@ -48,5 +48,13 @@ defmodule MishkaPub.ActivityStream.Type.Object do
 
   def main_validator(value) do
     IO.inspect(value)
+  end
+
+  def validator(:url, _value) do
+    :ok
+  end
+
+  def validator(field, _value) when field === :id do
+    :ok
   end
 end
