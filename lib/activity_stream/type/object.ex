@@ -54,7 +54,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     :ok
   end
 
-  def validator(field, _value) when field === :id do
+  def validator(:id, _value) do
     :ok
   end
 end

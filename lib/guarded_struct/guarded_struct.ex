@@ -187,19 +187,19 @@ defmodule GuardedStruct do
     exists?(module, :validator, :gs_validator, 2)
 
     gs_main_validator = Module.get_attribute(module, :gs_main_validator)
-    gs_validator = Module.get_attribute(module, :gs_validator)
+    gs_validator = Macro.escape(Module.get_attribute(module, :gs_validator))
     gs_fields = Module.get_attribute(module, :gs_fields) |> Enum.map(fn {key, _value} -> key end)
 
-    # TODO: If is there a custom gs_main_validator, then skipp checking the module for main_validator
-    # TODO: Delete all the keys are not in struct
-    # TODO: Loop
     quote do
       def builder(attrs) do
         main_validator = Enum.find(unquote(gs_main_validator), &is_tuple(&1))
 
         data =
           Map.take(attrs, unquote(gs_fields))
-          |> Enum.map(fn item -> nil end)
+          |> Enum.map(fn {key, value} ->
+            GuardedStruct.find_validator(key, value, unquote(gs_validator), __MODULE__)
+          end)
+          |> Enum.reject(&is_nil(&1))
 
         validated =
           cond do
@@ -218,6 +218,23 @@ defmodule GuardedStruct do
 
   defmacro delete_temporary_revaluation(%Macro.Env{module: module}) do
     Enum.each(unquote(@temporary_revaluation), &Module.delete_attribute(module, &1))
+  end
+
+  def find_validator(field, data, gs_validator, caller_module) do
+    case Enum.find(gs_validator, &(&1 != true && &1.field == field)) do
+      nil ->
+        if Enum.member?(gs_validator, true) do
+          caller_module.validator(field, data)
+        else
+          nil
+        end
+
+      %{field: key, validator: {module, func}} ->
+        apply(module, func, [key, data])
+
+      _ ->
+        nil
+    end
   end
 
   defp exists?(mod, modfn, attr_name, arity \\ 1) do
