@@ -18,11 +18,11 @@ defmodule MishkaPub.ActivityStream.Validator do
   def uri(_url) do
   end
 
-  def validator(:id, _id) do
-    :ok
+  def validator(:id, id) do
+    {:ok, :id, id}
   end
 
-  def main_validator(_value) do
-    :ok
+  def main_validator(value) do
+    {:ok, value}
   end
 end

@@ -190,51 +190,79 @@ defmodule GuardedStruct do
     gs_validator = Macro.escape(Module.get_attribute(module, :gs_validator))
     gs_fields = Module.get_attribute(module, :gs_fields) |> Enum.map(fn {key, _value} -> key end)
 
-    quote do
+    quote bind_quoted: [
+            module: module,
+            main_validator: Macro.escape(gs_main_validator),
+            validator: Macro.escape(gs_validator),
+            fields: Macro.escape(gs_fields)
+          ] do
       def builder(attrs) do
-        main_validator = Enum.find(unquote(gs_main_validator), &is_tuple(&1))
-
-        data =
-          Map.take(attrs, unquote(gs_fields))
-          |> Enum.map(fn {key, value} ->
-            GuardedStruct.find_validator(key, value, unquote(gs_validator), __MODULE__)
-          end)
-          |> Enum.reject(&is_nil(&1))
-
-        validated =
-          cond do
-            !is_nil(main_validator) ->
-              {module, func} = main_validator
-              apply(module, func, [data])
-
-            unquote(gs_main_validator) == [true] ->
-              apply(__MODULE__, :main_validator, [data])
-          end
-
-        validated
+        GuardedStruct.builder(
+          attrs,
+          unquote(module),
+          unquote(main_validator),
+          unquote(validator),
+          unquote(fields)
+        )
       end
+    end
+  end
+
+  def builder(attrs, module, gs_main_validator, gs_validator, gs_fields) do
+    main_validator = Enum.find(gs_main_validator, &is_tuple(&1))
+    allowed_data = Map.take(attrs, gs_fields)
+
+    validated =
+      allowed_data
+      |> Enum.map(fn {key, value} ->
+        GuardedStruct.find_validator(key, value, gs_validator, module)
+      end)
+
+    validated_errors =
+      Enum.filter(validated, fn {status, _field, _error_or_data} -> status == :error end)
+
+    validated_allowed_data =
+      if length(validated_errors) == 0 do
+        convert_list_tuple_to_map(validated)
+      else
+        allowed_data
+      end
+
+    {status, main_error_or_data} =
+      cond do
+        !is_nil(main_validator) ->
+          {module, func} = main_validator
+          apply(module, func, [validated_allowed_data])
+
+        gs_main_validator == [true] ->
+          apply(module, :main_validator, [validated_allowed_data])
+
+        true ->
+          {:ok, validated_allowed_data}
+      end
+
+    if status == :ok and length(validated_errors) == 0 do
+      {:ok, main_error_or_data}
+    else
+      {:error, validated_errors ++ if(status == :error, do: [main_error_or_data], else: []),
+       message: "There are one or more errors in the data sent"}
+    end
+  end
+
+  def find_validator(field, data, gs_validator, caller_module) do
+    case Enum.find(gs_validator, &(&1 != true && &1.field == field)) do
+      %{field: key, validator: {module, func}} ->
+        apply(module, func, [key, data])
+
+      _ ->
+        if Enum.member?(gs_validator, true),
+          do: caller_module.validator(field, data),
+          else: {:ok, field, data}
     end
   end
 
   defmacro delete_temporary_revaluation(%Macro.Env{module: module}) do
     Enum.each(unquote(@temporary_revaluation), &Module.delete_attribute(module, &1))
-  end
-
-  def find_validator(field, data, gs_validator, caller_module) do
-    case Enum.find(gs_validator, &(&1 != true && &1.field == field)) do
-      nil ->
-        if Enum.member?(gs_validator, true) do
-          caller_module.validator(field, data)
-        else
-          nil
-        end
-
-      %{field: key, validator: {module, func}} ->
-        apply(module, func, [key, data])
-
-      _ ->
-        nil
-    end
   end
 
   defp exists?(mod, modfn, attr_name, arity \\ 1) do
@@ -244,14 +272,20 @@ defmodule GuardedStruct do
   end
 
   defp custom_validator({module, func}) do
-    if Module.safe_concat([module]) |> function_exported?(func, 2) do
-      {module, func}
-    else
-      nil
-    end
-  rescue
-    _ -> nil
+    check? = Module.safe_concat([module]) |> function_exported?(func, 2)
+    if check?, do: {module, func}, else: nil
   end
 
   defp custom_validator(nil), do: nil
+
+  defp convert_list_tuple_to_map(list) do
+    Enum.reduce(list, %{}, fn {_, key, value}, acc ->
+      Map.put(acc, key, value)
+    end)
+  end
+
+  defp required_fields(keys, attr) do
+    missing_keys = Enum.reject(keys, &Map.has_key?(attr, &1))
+    if Enum.empty?(missing_keys), do: true, else: missing_keys
+  end
 end
