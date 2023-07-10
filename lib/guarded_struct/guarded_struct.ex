@@ -186,26 +186,20 @@ defmodule GuardedStruct do
     exists_validator?(module, :main_validator, :gs_main_validator)
     exists_validator?(module, :validator, :gs_validator, 2)
 
-    gs_main_validator = Module.get_attribute(module, :gs_main_validator)
+    gs_main_validator = Macro.escape(Module.get_attribute(module, :gs_main_validator))
     gs_validator = Macro.escape(Module.get_attribute(module, :gs_validator))
-    gs_fields = Module.get_attribute(module, :gs_fields) |> Enum.map(fn {key, _value} -> key end)
     gs_enforce_keys = Module.get_attribute(module, :gs_enforce_keys)
+    gs_fields = Macro.escape(Module.get_attribute(module, :gs_fields) |> Enum.map(&elem(&1, 0)))
 
-    quote bind_quoted: [
-            module: module,
-            main_validator: Macro.escape(gs_main_validator),
-            validator: Macro.escape(gs_validator),
-            fields: Macro.escape(gs_fields),
-            enforce_keys: gs_enforce_keys
-          ] do
+    quote do
       def builder(attrs) do
         GuardedStruct.builder(
           attrs,
           unquote(module),
-          unquote(main_validator),
-          unquote(validator),
-          unquote(fields),
-          unquote(enforce_keys)
+          unquote(gs_main_validator),
+          unquote(gs_validator),
+          unquote(gs_fields),
+          unquote(gs_enforce_keys)
         )
       end
     end
