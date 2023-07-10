@@ -183,8 +183,8 @@ defmodule GuardedStruct do
   defp type_for(type, _), do: quote(do: unquote(type) | nil)
 
   defmacro create_builder(%Macro.Env{module: module}) do
-    exists?(module, :main_validator, :gs_main_validator)
-    exists?(module, :validator, :gs_validator, 2)
+    exists_validator?(module, :main_validator, :gs_main_validator)
+    exists_validator?(module, :validator, :gs_validator, 2)
 
     gs_main_validator = Module.get_attribute(module, :gs_main_validator)
     gs_validator = Macro.escape(Module.get_attribute(module, :gs_validator))
@@ -248,7 +248,7 @@ defmodule GuardedStruct do
     {validated_errors, validated_allowed_data}
   end
 
-  def main_validating({:error, _, _} = error, _main_validator, _gs_main_validator, _module) do
+  def main_validating({:error, _, _} = error, _, _, _) do
     error
   end
 
@@ -295,7 +295,7 @@ defmodule GuardedStruct do
     Enum.each(unquote(@temporary_revaluation), &Module.delete_attribute(module, &1))
   end
 
-  defp exists?(mod, modfn, attr_name, arity \\ 1) do
+  defp exists_validator?(mod, modfn, attr_name, arity \\ 1) do
     if Module.defines?(mod, {modfn, arity}) do
       Module.put_attribute(mod, attr_name, true)
     end
