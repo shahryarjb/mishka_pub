@@ -189,12 +189,14 @@ defmodule GuardedStruct do
     gs_main_validator = Module.get_attribute(module, :gs_main_validator)
     gs_validator = Macro.escape(Module.get_attribute(module, :gs_validator))
     gs_fields = Module.get_attribute(module, :gs_fields) |> Enum.map(fn {key, _value} -> key end)
+    gs_enforce_keys = Module.get_attribute(module, :gs_enforce_keys)
 
     quote bind_quoted: [
             module: module,
             main_validator: Macro.escape(gs_main_validator),
             validator: Macro.escape(gs_validator),
-            fields: Macro.escape(gs_fields)
+            fields: Macro.escape(gs_fields),
+            enforce_keys: gs_enforce_keys
           ] do
       def builder(attrs) do
         GuardedStruct.builder(
@@ -202,14 +204,26 @@ defmodule GuardedStruct do
           unquote(module),
           unquote(main_validator),
           unquote(validator),
-          unquote(fields)
+          unquote(fields),
+          unquote(enforce_keys)
         )
       end
     end
   end
 
-  def builder(attrs, module, gs_main_validator, gs_validator, gs_fields) do
+  def builder(attrs, module, gs_main_validator, gs_validator, gs_fields, enforce_keys) do
     main_validator = Enum.find(gs_main_validator, &is_tuple(&1))
+
+    GuardedStruct.required_fields(enforce_keys, attrs)
+    |> GuardedStruct.field_validating(attrs, gs_validator, gs_fields, module)
+    |> GuardedStruct.main_validating(main_validator, gs_main_validator, module)
+  end
+
+  def field_validating({false, keys}, _attrs, _gs_validator, _gs_fields, _module) do
+    {:error, :required_fields, keys}
+  end
+
+  def field_validating({true, _keys}, attrs, gs_validator, gs_fields, module) do
     allowed_data = Map.take(attrs, gs_fields)
 
     validated =
@@ -220,6 +234,9 @@ defmodule GuardedStruct do
 
     validated_errors =
       Enum.filter(validated, fn {status, _field, _error_or_data} -> status == :error end)
+      |> Enum.map(fn {_status, field, error_or_data} ->
+        %{action: field, message: error_or_data}
+      end)
 
     validated_allowed_data =
       if length(validated_errors) == 0 do
@@ -228,6 +245,19 @@ defmodule GuardedStruct do
         allowed_data
       end
 
+    {validated_errors, validated_allowed_data}
+  end
+
+  def main_validating({:error, _, _} = error, _main_validator, _gs_main_validator, _module) do
+    error
+  end
+
+  def main_validating(
+        {validated_errors, validated_allowed_data},
+        main_validator,
+        gs_main_validator,
+        module
+      ) do
     {status, main_error_or_data} =
       cond do
         !is_nil(main_validator) ->
@@ -244,8 +274,8 @@ defmodule GuardedStruct do
     if status == :ok and length(validated_errors) == 0 do
       {:ok, main_error_or_data}
     else
-      {:error, validated_errors ++ if(status == :error, do: [main_error_or_data], else: []),
-       message: "There are one or more errors in the data sent"}
+      {:error, :bad_parameters,
+       validated_errors ++ if(status == :error, do: [main_error_or_data], else: [])}
     end
   end
 
@@ -284,8 +314,8 @@ defmodule GuardedStruct do
     end)
   end
 
-  defp required_fields(keys, attr) do
-    missing_keys = Enum.reject(keys, &Map.has_key?(attr, &1))
-    if Enum.empty?(missing_keys), do: true, else: missing_keys
+  def required_fields(keys, attrs) do
+    missing_keys = Enum.reject(keys, &Map.has_key?(attrs, &1))
+    {Enum.empty?(missing_keys), missing_keys}
   end
 end

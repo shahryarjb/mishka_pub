@@ -10,7 +10,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   # TODO: It can find it as main_validator in the module or user can set it as `guardedstruct` validator parameter
   guardedstruct main_validator: {Validator, :main_validator} do
     field(:id, String.t(), validator: {Validator, :validator})
-    field(:type, String.t())
+    field(:type, String.t(), enforce: true)
     field(:name, String.t(), default: "Joe")
     field(:content, String.t())
     field(:url, String.t())
@@ -40,7 +40,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   end
 
   def validator(:url, value) do
-    {:ok, :url, value}
+    {:error, :url, value}
   end
 
   def validator(:id, value) do
