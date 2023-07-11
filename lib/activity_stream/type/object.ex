@@ -3,11 +3,6 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   use GuardedStruct
 
   # TODO: Need a function to show all enforce field
-  # TODO: We need a function check all the required field are sent or not, and show what field is not sent?
-  # TODO: The action function should pass like this {:error, :action, [{:error, :field, message}]} | {:ok, :action}
-  # TODO: Top level validator as `guardedstruct` entires,
-  # TODO: It should be able to process all the data and then send it to the validators of each field.
-  # TODO: It can find it as main_validator in the module or user can set it as `guardedstruct` validator parameter
   guardedstruct main_validator: {Validator, :main_validator} do
     field(:id, String.t(), validator: {Validator, :validator})
     field(:type, String.t(), enforce: true)

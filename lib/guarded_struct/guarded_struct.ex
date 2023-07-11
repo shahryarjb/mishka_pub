@@ -1,4 +1,21 @@
 defmodule GuardedStruct do
+  @moduledoc """
+
+  ## Copyright
+
+  The code in this module is based on the 'typed_struct' library (https://github.com/ejpcmac/typed_struct),
+  which is licensed under the MIT License.
+
+  Modifications and additions have been made to enhance its capabilities as part of the current project.
+
+  MIT License
+
+  Adding new Copyright (c) [2023] [Shahryar Tavakkoli at Mishka Group]
+
+  **Note:** If the license changes during the support of this project, this file will always remain on MIT
+
+  """
+
   @temporary_revaluation [
     :gs_fields,
     :gs_types,
