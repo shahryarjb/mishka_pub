@@ -219,6 +219,22 @@ defmodule GuardedStruct do
           unquote(gs_enforce_keys)
         )
       end
+
+      def enforce_keys() do
+        unquote(gs_enforce_keys)
+      end
+
+      def enforce_keys(key) do
+        Enum.member?(unquote(gs_enforce_keys), key)
+      end
+
+      def keys() do
+        unquote(gs_fields)
+      end
+
+      def keys(key) do
+        Enum.member?(unquote(gs_fields), key)
+      end
     end
   end
 

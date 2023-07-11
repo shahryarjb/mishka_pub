@@ -2,7 +2,6 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   alias MishkaPub.ActivityStream.Validator
   use GuardedStruct
 
-  # TODO: Need a function to show all enforce field
   guardedstruct main_validator: {Validator, :main_validator} do
     field(:id, String.t(), validator: {Validator, :validator})
     field(:type, String.t(), enforce: true)
