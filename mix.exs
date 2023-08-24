@@ -23,6 +23,11 @@ defmodule MishkaPub.MixProject do
   defp deps do
     [
       {:plug, "~> 1.14"},
+      {:html_sanitize_ex, "~> 1.4.3"},
+      {:email_checker, "~> 0.2.4"},
+      {:ex_url, "~> 2.0"},
+      {:ex_phone_number, "~> 0.4.2"},
+      {:mishka_developer_tools, github: "mishka-group/mishka_developer_tools"},
       {:dialyxir, "~> 1.3", only: [:dev], runtime: false}
     ]
   end
