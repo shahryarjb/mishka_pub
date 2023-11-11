@@ -1,6 +1,8 @@
 defmodule ActivityStream.Type.Activity.Properties.Actor do
   use GuardedStruct
 
+  @actor_types ["Application", "Group", "Organization", "Person", "Service"]
+
   guardedstruct do
     field(:id, String.t(), derive: "sanitize(tag=strip_tags) validate(url)")
 

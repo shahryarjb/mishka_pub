@@ -2,6 +2,21 @@ defmodule MishkaPub.ActivityStream.Type.Link do
   use GuardedStruct
   alias ActivityStream.Type.Link.Properties
 
+  @object_and_link_types [
+    "Article",
+    "Audio",
+    "Document",
+    "Event",
+    "Image",
+    "Note",
+    "Page",
+    "Place",
+    "Profile",
+    "Relationship",
+    "Tombstone",
+    "Video"
+  ]
+
   guardedstruct do
     field(:context, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)",

@@ -2,6 +2,37 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
   use GuardedStruct
   alias ActivityStream.Type.Activity.Properties
 
+  @activity_types [
+    "Accept",
+    "Add",
+    "Announce",
+    "Arrive",
+    "Block",
+    "Create",
+    "Delete",
+    "Dislike",
+    "Flag",
+    "Follow",
+    "Ignore",
+    "Invite",
+    "Join",
+    "Leave",
+    "Like",
+    "Listen",
+    "Move",
+    "Offer",
+    "Question",
+    "Reject",
+    "Read",
+    "Remove",
+    "TentativeReject",
+    "TentativeAccept",
+    "Travel",
+    "Undo",
+    "Update",
+    "View"
+  ]
+
   guardedstruct do
     field(:context, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)",
