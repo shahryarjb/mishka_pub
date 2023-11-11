@@ -2,7 +2,6 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
   use GuardedStruct
   alias ActivityStream.Type.Activity.Properties
 
-  # actor | object | target | result | origin | instrument
   guardedstruct do
     field(:context, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)",
