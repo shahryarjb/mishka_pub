@@ -1,6 +1,7 @@
-defmodule MishkaPub.ActivityStream.Type.Collection do
+defmodule MishkaPub.ActivityStream.Type.OrderedCollection do
   use GuardedStruct
   alias ActivityStream.Type.Collection.Properties
+  alias ActivityStream.Type.Collection.Properties.OrderedItems
 
   # totalItems | current | first | last | items
   guardedstruct do
@@ -17,9 +18,6 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     field(:summary, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
     )
-
-    field(:items, struct(), structs: Properties.Items)
-    field(:item, struct(), structs: Properties.Items)
 
     field(:totalItems, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
@@ -39,5 +37,7 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
       field(:last, struct(), struct: Properties.Last, hint: "lastMap")
       field(:last, String.t(), hint: "last")
     end
+
+    field(:orderedItems, struct(), structs: OrderedItems)
   end
 end
