@@ -2,7 +2,6 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
   use GuardedStruct
   alias ActivityStream.Type.Collection.Properties
 
-  # totalItems | current | first | last | items
   guardedstruct do
     field(:context, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)",
