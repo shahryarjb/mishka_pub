@@ -12,7 +12,7 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollection do
 
     field(:type, String.t(),
       derive: "sanitize(tag=strip_tags) validate(equal=Object)",
-      default: "Collection"
+      default: "OrderedCollection"
     )
 
     field(:summary, String.t(),

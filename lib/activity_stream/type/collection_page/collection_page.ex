@@ -1,8 +1,7 @@
-defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
+defmodule MishkaPub.ActivityStream.Type.CollectionPage do
   use GuardedStruct
   alias ActivityStream.Type.Collection.Properties
   alias ActivityStream.Type.CollectionPage.Properties.{Next, Prev}
-  alias ActivityStream.Type.Collection.Properties.OrderedItems
 
   guardedstruct do
     field(:context, String.t(),
@@ -12,12 +11,15 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
 
     field(:type, String.t(),
       derive: "sanitize(tag=strip_tags) validate(equal=Object)",
-      default: "OrderedCollectionPage"
+      default: "CollectionPage"
     )
 
     field(:summary, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
     )
+
+    field(:items, struct(), structs: Properties.Items)
+    field(:item, struct(), structs: Properties.Items)
 
     field(:totalItems, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
@@ -51,11 +53,5 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
       field(:prev, struct(), struct: Prev, hint: "prevMap")
       field(:prev, String.t(), hint: "prev")
     end
-
-    field(:orderedItems, struct(), structs: OrderedItems)
-
-    field(:startIndex, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
-    )
   end
 end
