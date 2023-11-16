@@ -2,7 +2,9 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   use GuardedStruct
   alias ActivityStream.Type.Object.Properties
 
+  # This part can be extended and Inherits from object properties
   @object_and_link_types [
+    "Object",
     "Article",
     "Audio",
     "Document",
@@ -31,8 +33,9 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # Identifies the Object or Link type. Multiple values may be specified.
     # Domain: Object | Link
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(equal=Object)",
-      default: "Object"
+      default: "Object",
+      derive:
+        "sanitize(tag=strip_tags) validate(enum=String[#{Enum.join(@object_and_link_types, "::")}])"
     )
 
     # URI: https://www.w3.org/ns/activitystreams#context
@@ -51,8 +54,8 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # Provides the globally unique identifier for an Object or Link.
     # Domain: Object | Link
     field(:id, String.t(),
-      domain: "!type=Equal[String>>Object]",
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, uuid)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, uuid)",
+      enforce: true
     )
 
     # URI: https://www.w3.org/ns/activitystreams#name
@@ -220,5 +223,11 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # for which the object can considered to be relevant.
     # Domain:	Object
     field(:audience, struct(), struct: Properties.Audience)
+
+    # When we have these Properties: Relationship
+    field(:object, struct(),
+      domain: "?type=Equal[String>>Relationship]",
+      struct: MishkaPub.ActivityStream.Type.Object
+    )
   end
 end
