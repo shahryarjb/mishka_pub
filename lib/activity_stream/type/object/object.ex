@@ -2,6 +2,10 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   use GuardedStruct
   alias ActivityStream.Type.Object.Properties
 
+  @type struct_list() :: struct() | list(struct())
+  @type struct_list_string() :: struct_list() | String.t()
+  @type list_string() :: list(String.t())
+
   # This part can be extended and Inherits from object properties
   @object_and_link_types [
     "Object",
@@ -23,11 +27,16 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   # Describes an object of any kind. The Object type serves as the base type for
   # most of the other kinds of objects defined in the Activity Vocabulary, including other
   # Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection.
+  # ---------------------------------------------------------------------------------------
   # Properties:
   # attachment | attributedTo | audience | content | context | name | endTime |
   #  generator | icon | image | inReplyTo | location | preview | published |
   #  replies | startTime | summary | tag | updated | url | to | bto |
   #  cc | bcc | mediaType | duration
+  # ---------------------------------------------------------------------------------------
+  # different Types (These can be Inherited or call the object again as child):
+  # "Object", "Article", "Audio", "Document", "Event", "Image", "Note", "Page",
+  # "Place", "Profile", "Relationship", "Tombstone", "Video"
   guardedstruct do
     # URI: @type
     # Identifies the Object or Link type. Multiple values may be specified.
@@ -49,13 +58,13 @@ defmodule MishkaPub.ActivityStream.Type.Object do
       default: "https://www.w3.org/ns/activitystreams"
     )
 
-    # TODO: auto: {Ecto.UUID, :generate} \\ we can have Ecto uuid to create auto id
     # URI: @id
     # Provides the globally unique identifier for an Object or Link.
     # Domain: Object | Link
+    # Ex: "id": "http://example.org/foo"
     field(:id, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, uuid)",
-      enforce: true
+      auto: {Ecto.UUID, :generate}
     )
 
     # URI: https://www.w3.org/ns/activitystreams#name
@@ -63,7 +72,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # The name may be expressed using multiple language-tagged values.
     # Domain:	Object | Link
     field(:name, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=250, min_len=3)"
     )
 
     # Owner: :name
@@ -93,18 +102,30 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # The image should have an aspect ratio of one (horizontal) to one (vertical)
     # and should be suitable for presentation at a small size.
     # Domain:	Object
-    field(:icon, struct(), struct: Properties.Icon)
+    conditional_field(:icon, struct_list()) do
+      field(:icon, list(struct()), structs: Properties.Icon)
+      field(:icon, struct(), struct: Properties.Icon)
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#image
     # Indicates an entity that describes an image for this object.
     # Unlike the icon property, there are no aspect ratio or display size limitations assumed.
     # Domain:	Object
-    field(:image, struct(), struct: Properties.Image)
+    conditional_field(:image, struct_list()) do
+      field(:image, list(struct()), structs: Properties.Image)
+      field(:image, struct(), struct: Properties.Image)
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#inReplyTo
     # Indicates one or more entities for which this object is considered a response.
     # Domain:	Object
-    field(:inReplyTo, struct(), struct: Properties.InReplyTo)
+    conditional_field(:inReplyTo, struct_list()) do
+      field(:inReplyTo, struct(), struct: Properties.InReplyTo)
+
+      field(:inReplyTo, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)"
+      )
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#location
     # Indicates one or more physical or logical locations associated with the object.
@@ -142,7 +163,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # The key difference between attachment and tag is that the former implies association by inclusion,
     # while the latter implies associated by reference.
     # Domain:	Object
-    field(:tag, struct(), struct: Properties.Tag)
+    field(:tag, list(struct()), structs: Properties.Tag)
 
     # URI: https://www.w3.org/ns/activitystreams#updated
     # The date and time at which the object was updated
@@ -152,27 +173,39 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # URI: https://www.w3.org/ns/activitystreams#url
     # Identifies one or more links to representations of the object
     # Domain:	Object
-    field(:url, struct(), struct: Properties.Url)
+    conditional_field(:url, struct_list_string()) do
+      field(:url, struct(), structs: Properties.Url)
+      field(:url, struct(), struct: Properties.Url)
+      field(:url, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#to
     # Identifies an entity considered to be part of the public primary audience of an Object
     # Domain:	Object
-    field(:to, list(String.t()), derive: "sanitize(tag=strip_tags) validate(min_len=1)")
+    conditional_field(:to, list_string(), structs: true) do
+      field(:to, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#bto
     # Identifies an Object that is part of the private primary audience of this Object.
     # Domain:	Object
-    field(:bto, list(String.t()), derive: "sanitize(tag=strip_tags) validate(min_len=1)")
+    conditional_field(:bto, list_string(), structs: true) do
+      field(:bto, list(String.t()), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#cc
     # Identifies an Object that is part of the public secondary audience of this Object.
     # Domain:	Object
-    field(:cc, list(String.t()), derive: "sanitize(tag=strip_tags) validate(min_len=1)")
+    conditional_field(:cc, list_string(), structs: true) do
+      field(:cc, list(String.t()), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#bcc
     # Identifies one or more Objects that are part of the private secondary audience of this Object.
     # Domain:	Object
-    field(:bcc, list(String.t()), derive: "sanitize(tag=strip_tags) validate(min_len=1)")
+    conditional_field(:bcc, list_string(), structs: true) do
+      field(:bcc, list(String.t()), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#mediaType
     # When used on a Link, identifies the MIME media type of the referenced resource.
@@ -189,7 +222,8 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").
     # Domain:	Object
     field(:duration, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
+      derive:
+        "sanitize(tag=strip_tags) validate(not_empty_string, custom=[MishkaPub.Helper.Extra, is_duration?])"
     )
 
     # URI:	https://www.w3.org/ns/activitystreams#content
@@ -199,7 +233,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # The content may be expressed using multiple language-tagged values.
     # Domain:	Object
     field(:content, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=1500)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=1500, min_len=3)"
     )
 
     # Owner: :content
@@ -209,14 +243,20 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # Identifies a resource attached or related to an object that potentially requires special handling.
     # The intent is to provide a model that is at least semantically similar to attachments in email.
     # Domain:	Object
-    field(:attachment, struct(), struct: Properties.Attachment)
+    field(:attachment, list(struct()), structs: Properties.Attachment)
 
     # URI: https://www.w3.org/ns/activitystreams#attributedTo
     # Identifies one or more entities to which this object is attributed.
     # The attributed entities might not be Actors. For instance, an object might
     # be attributed to the completion of another activity.
     # Domain:	Link | Object
-    field(:attributedTo, struct(), struct: Properties.AttributedTo)
+    conditional_field(:attributedTo, list_string(), structs: true) do
+      field(:attributedTo, struct(), structs: Properties.AttributedTo)
+
+      field(:attributedTo, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)"
+      )
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#audience
     # Identifies one or more entities that represent the total population of entities

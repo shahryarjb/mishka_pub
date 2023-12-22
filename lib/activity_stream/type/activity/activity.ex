@@ -40,7 +40,7 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     )
 
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(equal=Object)",
+      derive: "sanitize(tag=strip_tags) validate(equal=String::Object)",
       default: "Activity"
     )
 

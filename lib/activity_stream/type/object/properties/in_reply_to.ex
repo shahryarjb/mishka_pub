@@ -2,14 +2,19 @@ defmodule ActivityStream.Type.Object.Properties.InReplyTo do
   use GuardedStruct
 
   guardedstruct do
-    field(:summary, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=600)"
+    field(:type, String.t(),
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
     )
 
-    field(:type, String.t(), derive: "sanitize(tag=strip_tags) validate(not_empty_string)")
+    field(:summary, String.t(),
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=300, min_len=10)"
+    )
 
     field(:content, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=1500)"
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=5000, min_len=10)"
     )
   end
 end

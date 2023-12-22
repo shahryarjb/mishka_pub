@@ -28,6 +28,8 @@ defmodule MishkaPub.MixProject do
       {:ex_url, "~> 2.0"},
       {:ex_phone_number, "~> 0.4.2"},
       {:mishka_developer_tools, github: "mishka-group/mishka_developer_tools"},
+      {:ecto_sql, "~> 3.11"},
+      {:ex_doc, "~> 0.31", only: :dev, runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end

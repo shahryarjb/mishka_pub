@@ -10,7 +10,7 @@ defmodule MishkaPub.ActivityStream.Type.CollectionPage do
     )
 
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(equal=Object)",
+      derive: "sanitize(tag=strip_tags) validate(equal=String::Object)",
       default: "CollectionPage"
     )
 

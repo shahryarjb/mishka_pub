@@ -3,7 +3,7 @@ defmodule ActivityStream.Type.Activity.Properties.Target do
 
   guardedstruct do
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(equal=Object)",
+      derive: "sanitize(tag=strip_tags) validate(equal=String::Object)",
       default: "Person"
     )
 

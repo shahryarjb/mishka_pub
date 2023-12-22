@@ -9,8 +9,14 @@ defmodule ActivityStream.Type.Object.Properties.Location do
     )
 
     field(:longitude, float(), derive: "sanitize(tag=strip_tags) validate(float)")
+
     field(:latitude, float(), derive: "sanitize(tag=strip_tags) validate(float)")
-    field(:altitude, integer(), derive: "sanitize(tag=strip_tags) validate(ineteger)")
-    field(:units, String.t(), derive: "sanitize(tag=strip_tags) validate(not_empty_string)")
+
+    field(:altitude, integer(), derive: "sanitize(tag=strip_tags) validate(float)")
+
+    field(:units, String.t(),
+      default: "m",
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, enum=String[m::ft::km::mi])"
+    )
   end
 end

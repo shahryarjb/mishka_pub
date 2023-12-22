@@ -1,4 +1,11 @@
 defmodule MishkaPub.Helper.Extra do
+  def is_duration?(value) when is_binary(value) do
+    ~r"^PT(\d+H)?(\d+M)?(\d+S)?$"
+    |> Regex.match?(value)
+  end
+
+  def is_duration?(_value), do: false
+
   def test_function do
     Enum.map([1, 2, 3], fn x -> IO.inspect(x) end)
   end

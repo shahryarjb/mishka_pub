@@ -3,11 +3,11 @@ defmodule ActivityStream.Type.Object.Properties.NameMap do
 
   guardedstruct do
     field(:en, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=250, min_len=3)"
     )
 
     field(:fa, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=250, min_len=3)"
     )
   end
 end

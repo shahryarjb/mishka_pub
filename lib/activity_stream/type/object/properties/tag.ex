@@ -7,9 +7,13 @@ defmodule ActivityStream.Type.Object.Properties.Tag do
       derive: "sanitize(tag=strip_tags) validate(not_empty_string)"
     )
 
-    field(:id, String.t(), derive: "sanitize(tag=strip_tags) validate(url)")
+    field(:id, String.t(),
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(url, max_len=160)"
+    )
 
     field(:name, String.t(),
+      enforce: true,
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
     )
   end
