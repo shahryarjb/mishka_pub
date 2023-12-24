@@ -24,26 +24,24 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     )
 
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(equal=String::Object)",
+      derive:
+        "sanitize(tag=strip_tags) validate(enum=String[#{Enum.join(@object_and_link_types, "::")}])",
       default: "Link"
     )
 
-    field(:href, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
-    )
+    field(:href, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
 
     field(:hreflang, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)",
+      derive: "sanitize(tag=strip_tags) validate(enum=String[en::fa])",
       default: "en"
     )
 
-    # ["canonical", "preview"]
-    field(:rel, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
-    )
+    conditional_field(:rel, list_string(), structs: true) do
+      field(:rel, list(String.t()), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
+    end
 
     field(:mediaType, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, enum=String[\"text/html\"])"
     )
 
     field(:name, String.t(),
@@ -52,12 +50,14 @@ defmodule MishkaPub.ActivityStream.Type.Link do
 
     field(:nameMap, struct(), struct: Properties.NameMap)
 
-    field(:height, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
+    field(:width, integer(),
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
     )
 
-    field(:width, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
+    field(:height, integer(),
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
     )
 
     field(:preview, struct(), struct: ActivityStream.Type.Object.Properties.Preview)
