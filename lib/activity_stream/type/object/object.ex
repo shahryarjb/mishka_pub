@@ -223,7 +223,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # Domain:	Object
     field(:duration, String.t(),
       derive:
-        "sanitize(tag=strip_tags) validate(not_empty_string, custom=[MishkaPub.Helper.Extra, is_duration?])"
+        "sanitize(tag=strip_tags) validate(not_empty_string, max_len=10, custom=[MishkaPub.Helper.Extra, is_duration?])"
     )
 
     # URI:	https://www.w3.org/ns/activitystreams#content

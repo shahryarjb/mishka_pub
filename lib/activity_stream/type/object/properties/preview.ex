@@ -14,7 +14,7 @@ defmodule ActivityStream.Type.Object.Properties.Preview do
     # Ex: "duration": "PT2H30M"
     field(:duration, String.t(),
       derive:
-        "sanitize(tag=strip_tags) validate(not_empty_string, custom=[MishkaPub.Helper.Extra, is_duration?])"
+        "sanitize(tag=strip_tags) validate(not_empty_string, max_len=10, custom=[MishkaPub.Helper.Extra, is_duration?])"
     )
 
     field(:url, struct(), structs: true, struct: Url)
