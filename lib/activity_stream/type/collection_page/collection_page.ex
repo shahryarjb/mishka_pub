@@ -10,8 +10,13 @@ defmodule MishkaPub.ActivityStream.Type.CollectionPage do
     )
 
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(equal=String::Object)",
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)",
       default: "CollectionPage"
+    )
+
+    field(:id, String.t(),
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, uuid)",
+      auto: {Ecto.UUID, :generate}
     )
 
     field(:summary, String.t(),
@@ -19,10 +24,10 @@ defmodule MishkaPub.ActivityStream.Type.CollectionPage do
     )
 
     field(:items, struct(), structs: Properties.Items)
-    field(:item, struct(), structs: Properties.Items)
 
     field(:totalItems, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(integer, min_len=0)"
     )
 
     conditional_field(:current, any()) do
@@ -41,7 +46,7 @@ defmodule MishkaPub.ActivityStream.Type.CollectionPage do
     end
 
     field(:partOf, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, url, max_len=160)"
     )
 
     conditional_field(:next, any()) do
