@@ -9,7 +9,7 @@ defmodule MishkaPub.ActivityStream.Type.IntransitiveActivity do
     )
 
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(equal=String::Object)",
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)",
       default: "Travel"
     )
 

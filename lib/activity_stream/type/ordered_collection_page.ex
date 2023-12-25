@@ -11,7 +11,7 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     )
 
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(equal=String::Object)",
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)",
       default: "OrderedCollectionPage"
     )
 
@@ -20,7 +20,8 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     )
 
     field(:totalItems, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(integer, min_len=0)"
     )
 
     conditional_field(:current, any()) do
@@ -39,7 +40,7 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     end
 
     field(:partOf, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, url, max_len=160)"
     )
 
     conditional_field(:next, any()) do
@@ -55,7 +56,8 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     field(:orderedItems, struct(), structs: OrderedItems)
 
     field(:startIndex, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(integer, min_len=0)"
     )
   end
 end
