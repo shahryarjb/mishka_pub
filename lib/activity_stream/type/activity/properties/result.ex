@@ -3,8 +3,8 @@ defmodule ActivityStream.Type.Activity.Properties.Result do
 
   guardedstruct do
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)",
-      default: "Person"
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(url, max_len=160)"
     )
 
     field(:name, String.t(),

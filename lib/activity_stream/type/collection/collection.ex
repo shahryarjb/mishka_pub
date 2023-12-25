@@ -9,7 +9,7 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     )
 
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(equal=String::Object)",
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)",
       default: "Collection"
     )
 
@@ -17,12 +17,12 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
     )
 
-    field(:items, struct(), structs: Properties.Items)
-    field(:item, struct(), structs: Properties.Items)
-
     field(:totalItems, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(integer, min_len=0)"
     )
+
+    field(:items, struct(), structs: Properties.Items)
 
     conditional_field(:current, any()) do
       field(:current, struct(), struct: Properties.Current, hint: "currentMap")
