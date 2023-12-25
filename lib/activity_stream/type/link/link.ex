@@ -2,7 +2,11 @@ defmodule MishkaPub.ActivityStream.Type.Link do
   use GuardedStruct
   alias ActivityStream.Type.Link.Properties
 
-  @object_and_link_types [
+  @type struct_list() :: struct() | list(struct())
+  @type struct_list_string() :: struct_list() | String.t() | list(String.t())
+  @type list_string() :: list(String.t())
+
+  @types [
     "Article",
     "Audio",
     "Document",
@@ -24,8 +28,7 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     )
 
     field(:type, String.t(),
-      derive:
-        "sanitize(tag=strip_tags) validate(enum=String[#{Enum.join(@object_and_link_types, "::")}])",
+      derive: "sanitize(tag=strip_tags) validate(enum=String[#{Enum.join(@types, "::")}])",
       default: "Link"
     )
 

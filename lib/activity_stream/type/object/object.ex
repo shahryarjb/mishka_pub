@@ -7,7 +7,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   @type list_string() :: list(String.t())
 
   # This part can be extended and Inherits from object properties
-  @object_and_link_types [
+  @types [
     "Object",
     "Article",
     "Audio",
@@ -43,8 +43,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # Domain: Object | Link
     field(:type, String.t(),
       default: "Object",
-      derive:
-        "sanitize(tag=strip_tags) validate(enum=String[#{Enum.join(@object_and_link_types, "::")}])"
+      derive: "sanitize(tag=strip_tags) validate(enum=String[#{Enum.join(@types, "::")}])"
     )
 
     # URI: https://www.w3.org/ns/activitystreams#context
