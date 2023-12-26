@@ -5,4 +5,6 @@ defmodule ActivityStream.Behaviour do
   @type slss() :: sls() | String.t()
   @type li() :: list(integer())
   @type lm() :: list(map())
+  @type uuid() :: <<_::288>>
+  @type lst() :: list(struct())
 end

@@ -22,12 +22,12 @@ defmodule ActivityStream.Type.Object.Properties.Icon do
       derive: "sanitize(tag=strip_tags) validate(url, max_len=160)"
     )
 
-    field(:width, integer(),
+    field(:width, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
     )
 
-    field(:height, integer(),
+    field(:height, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
     )

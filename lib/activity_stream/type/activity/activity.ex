@@ -1,10 +1,7 @@
 defmodule MishkaPub.ActivityStream.Type.Activity do
   use GuardedStruct
   alias ActivityStream.Type.Activity.Properties
-
-  @type struct_list() :: struct() | list(struct())
-  @type struct_list_string() :: struct_list() | String.t() | list(String.t())
-  @type list_string() :: list(String.t())
+  alias ActivityStream.Behaviour
 
   @types [
     "Accept",
@@ -53,10 +50,10 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     )
 
     # TODO: we need to check this part as a multi list
-    conditional_field(:actor, struct_list_string()) do
+    conditional_field(:actor, Behaviour.ssls()) do
       field(:actor, struct(), struct: Properties.Actor)
 
-      conditional_field(:actor, struct_list(), structs: true) do
+      conditional_field(:actor, Behaviour.ssls(), structs: true) do
         field(:actor, struct(), struct: Properties.Actor)
 
         field(:actor, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
@@ -65,7 +62,7 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
       field(:actor, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
-    conditional_field(:object, struct_list_string()) do
+    conditional_field(:object, Behaviour.ssls()) do
       field(:object, struct(), struct: MishkaPub.ActivityStream.Type.Object, hint: "objectMap")
 
       field(:object, String.t(),
@@ -74,7 +71,7 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
       )
     end
 
-    conditional_field(:target, struct_list_string()) do
+    conditional_field(:target, Behaviour.ssls()) do
       field(:target, struct(), struct: Properties.Target, hint: "targetMap")
 
       field(:target, String.t(),

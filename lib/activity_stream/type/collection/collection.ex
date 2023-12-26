@@ -17,7 +17,7 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
     )
 
-    field(:totalItems, String.t(),
+    field(:totalItems, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=0)"
     )

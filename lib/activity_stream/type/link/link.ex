@@ -1,10 +1,7 @@
 defmodule MishkaPub.ActivityStream.Type.Link do
   use GuardedStruct
+  alias ActivityStream.Behaviour
   alias ActivityStream.Type.Link.Properties
-
-  @type struct_list() :: struct() | list(struct())
-  @type struct_list_string() :: struct_list() | String.t() | list(String.t())
-  @type list_string() :: list(String.t())
 
   @types [
     "Article",
@@ -39,8 +36,8 @@ defmodule MishkaPub.ActivityStream.Type.Link do
       default: "en"
     )
 
-    conditional_field(:rel, list_string(), structs: true) do
-      field(:rel, list(String.t()), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
+    conditional_field(:rel, Behaviour.ls(), structs: true) do
+      field(:rel, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
     field(:mediaType, String.t(),
@@ -53,12 +50,12 @@ defmodule MishkaPub.ActivityStream.Type.Link do
 
     field(:nameMap, struct(), struct: Properties.NameMap)
 
-    field(:width, integer(),
+    field(:width, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
     )
 
-    field(:height, integer(),
+    field(:height, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
     )
