@@ -50,7 +50,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # An example could be all activities relating to a common project or event.
     # Domain: Object
     field(:context, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)",
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, url, max_len=160)",
       default: "https://www.w3.org/ns/activitystreams"
     )
 
@@ -58,16 +58,21 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # Provides the globally unique identifier for an Object or Link.
     # Domain: Object | Link
     # Ex: "id": "http://example.org/foo"
-    field(:id, Behaviour.uuid(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, uuid)",
-      auto: {Ecto.UUID, :generate}
-    )
+    # TODO: It should be check it works?
+    conditional_field(:id, String.t(), auto: {Ecto.UUID, :generate}) do
+      field(:id, Behaviour.uuid(),
+        derive: "sanitize(tag=strip_tags) validate(not_empty_string, uuid)"
+      )
+
+      field(:id, String.t(), derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)")
+    end
 
     # URI: https://www.w3.org/ns/activitystreams#name
     # A simple, human-readable, plain-text name for the object. HTML markup must not be included.
     # The name may be expressed using multiple language-tagged values.
     # Domain:	Object | Link
     field(:name, String.t(),
+      enforce: true,
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=250, min_len=3)"
     )
 
@@ -91,6 +96,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # URI: https://www.w3.org/ns/activitystreams#generator
     # Identifies the entity (e.g. an application) that generated the object.
     # Domain:	Object
+    # TODO: We should know, how mutch items we can use as the type of this key, ex `application`
     field(:generator, struct(), struct: Properties.Generator)
 
     # URI: https://www.w3.org/ns/activitystreams#icon
@@ -98,9 +104,17 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # The image should have an aspect ratio of one (horizontal) to one (vertical)
     # and should be suitable for presentation at a small size.
     # Domain:	Object
+    # TODO: it should be tested
     conditional_field(:icon, Behaviour.sls()) do
-      field(:icon, Behaviour.lst(), structs: Properties.Icon)
-      field(:icon, struct(), struct: Properties.Icon)
+      field(:icon, Behaviour.lst(),
+        structs: Properties.Icon,
+        derive: "validate(list, not_empty, not_flatten_empty_item)"
+      )
+
+      field(:icon, struct(),
+        struct: Properties.Icon,
+        derive: "validate(map, not_empty)"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#image
@@ -108,15 +122,22 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # Unlike the icon property, there are no aspect ratio or display size limitations assumed.
     # Domain:	Object
     conditional_field(:image, Behaviour.sls()) do
-      field(:image, Behaviour.lst(), structs: Properties.Image)
-      field(:image, struct(), struct: Properties.Image)
+      field(:image, Behaviour.lst(),
+        structs: Properties.Image,
+        derive: "validate(list, not_empty, not_flatten_empty_item)"
+      )
+
+      field(:image, struct(), struct: Properties.Image, derive: "validate(map, not_empty)")
     end
 
     # URI: https://www.w3.org/ns/activitystreams#inReplyTo
     # Indicates one or more entities for which this object is considered a response.
     # Domain:	Object
     conditional_field(:inReplyTo, Behaviour.sls()) do
-      field(:inReplyTo, struct(), struct: Properties.InReplyTo)
+      field(:inReplyTo, struct(),
+        struct: Properties.InReplyTo,
+        derive: "validate(map, not_empty)"
+      )
 
       field(:inReplyTo, String.t(),
         derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)"
@@ -159,7 +180,10 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # The key difference between attachment and tag is that the former implies association by inclusion,
     # while the latter implies associated by reference.
     # Domain:	Object
-    field(:tag, Behaviour.lst(), structs: Properties.Tag)
+    field(:tag, Behaviour.lst(),
+      structs: Properties.Tag,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    )
 
     # URI: https://www.w3.org/ns/activitystreams#updated
     # The date and time at which the object was updated
@@ -170,36 +194,53 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # Identifies one or more links to representations of the object
     # Domain:	Object
     conditional_field(:url, Behaviour.ssls()) do
-      field(:url, Behaviour.lst(), structs: Properties.Url)
-      field(:url, struct(), struct: Properties.Url)
+      field(:url, Behaviour.lst(),
+        structs: Properties.Url,
+        derive: "validate(list, not_empty, not_flatten_empty_item)"
+      )
+
+      field(:url, struct(), struct: Properties.Url, derive: "validate(map, not_empty)")
+
       field(:url, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
     # URI: https://www.w3.org/ns/activitystreams#to
     # Identifies an entity considered to be part of the public primary audience of an Object
     # Domain:	Object
-    conditional_field(:to, Behaviour.ls(), structs: true) do
+    conditional_field(:to, Behaviour.ls(),
+      structs: true,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    ) do
       field(:to, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
     # URI: https://www.w3.org/ns/activitystreams#bto
     # Identifies an Object that is part of the private primary audience of this Object.
     # Domain:	Object
-    conditional_field(:bto, Behaviour.ls(), structs: true) do
+    conditional_field(:bto, Behaviour.ls(),
+      structs: true,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    ) do
       field(:bto, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
     # URI: https://www.w3.org/ns/activitystreams#cc
     # Identifies an Object that is part of the public secondary audience of this Object.
     # Domain:	Object
-    conditional_field(:cc, Behaviour.ls(), structs: true) do
+    conditional_field(:cc, Behaviour.ls(),
+      structs: true,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    ) do
       field(:cc, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
     # URI: https://www.w3.org/ns/activitystreams#bcc
     # Identifies one or more Objects that are part of the private secondary audience of this Object.
     # Domain:	Object
-    conditional_field(:bcc, Behaviour.ls(), structs: true) do
+    conditional_field(:bcc, Behaviour.ls(),
+      structs: true,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    ) do
       field(:bcc, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
@@ -207,6 +248,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # When used on a Link, identifies the MIME media type of the referenced resource.
     # When used on an Object, identifies the MIME media type of the value of the content property.
     # If not specified, the content property is assumed to contain text/html content.
+    # TODO: We need to specify this part of object and name all types we can bring here
     field(:mediaType, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, enum=String[\"text/html\"])"
     )
@@ -215,7 +257,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # When the object describes a time-bound resource, such as an audio or video,
     # a meeting, etc, the duration property indicates the object's approximate duration.
     # The value must be expressed as an xsd:duration as defined by [ xmlschema11-2],
-    # section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").
+    # section 3.3.6 (e.g. a period of 5 seconds is represented as "PT0H0M5S").
     # Domain:	Object
     field(:duration, String.t(),
       derive:
@@ -233,21 +275,33 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     )
 
     # Owner: :content
-    field(:contentMap, struct(), struct: Properties.ContentMap)
+    field(:contentMap, struct(),
+      struct: Properties.ContentMap,
+      derive: "validate(map, not_empty)"
+    )
 
     # URI: https://www.w3.org/ns/activitystreams#attachment
     # Identifies a resource attached or related to an object that potentially requires special handling.
     # The intent is to provide a model that is at least semantically similar to attachments in email.
     # Domain:	Object
-    field(:attachment, Behaviour.lst(), structs: Properties.Attachment)
+    field(:attachment, Behaviour.lst(),
+      structs: Properties.Attachment,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    )
 
     # URI: https://www.w3.org/ns/activitystreams#attributedTo
     # Identifies one or more entities to which this object is attributed.
     # The attributed entities might not be Actors. For instance, an object might
     # be attributed to the completion of another activity.
     # Domain:	Link | Object
-    conditional_field(:attributedTo, Behaviour.ls(), structs: true) do
-      field(:attributedTo, struct(), structs: Properties.AttributedTo)
+    conditional_field(:attributedTo, Behaviour.ls(),
+      structs: true,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    ) do
+      field(:attributedTo, struct(),
+        struct: Properties.AttributedTo,
+        derive: "validate(map, not_empty)"
+      )
 
       field(:attributedTo, String.t(),
         derive: "sanitize(tag=strip_tags) validate(url, max_len=160)"
