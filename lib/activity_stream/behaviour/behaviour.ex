@@ -7,4 +7,5 @@ defmodule ActivityStream.Behaviour do
   @type lm() :: list(map())
   @type uuid() :: <<_::288>>
   @type lst() :: list(struct())
+  @type ss() :: struct() | String.t()
 end

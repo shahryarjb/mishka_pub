@@ -15,11 +15,15 @@ defmodule ActivityStream.Type.Object.Properties.Preview do
       derive: "sanitize(tag=strip_tags) validate(not_empty_string)"
     )
 
-    field(:name, String.t(), derive: "sanitize(tag=strip_tags) validate(not_empty_string)")
+    field(:name, String.t(),
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string)"
+    )
 
     # The value associated with "duration" is an ISO 8601 duration string.
     # Ex: "duration": "PT2H30M"
     field(:duration, String.t(),
+      enforce: true,
       derive:
         "sanitize(tag=strip_tags) validate(not_empty_string, max_len=10, custom=[MishkaPub.Helper.Extra, is_duration?])"
     )

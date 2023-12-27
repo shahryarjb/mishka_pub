@@ -9,17 +9,21 @@ defmodule ActivityStream.Type.Object.Properties.Location do
   # ---------------------------------------------------------------------------------------
   # Domain: Object
   guardedstruct do
-    field(:type, String.t(), derive: "sanitize(tag=strip_tags) validate(not_empty_string)")
+    field(:type, String.t(),
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string)"
+    )
 
     field(:name, String.t(),
+      enforce: true,
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
     )
 
-    field(:longitude, float(), derive: "sanitize(tag=strip_tags) validate(float)")
+    field(:longitude, float(), enforce: true, derive: "sanitize(tag=strip_tags) validate(float)")
 
-    field(:latitude, float(), derive: "sanitize(tag=strip_tags) validate(float)")
+    field(:latitude, float(), enforce: true, derive: "sanitize(tag=strip_tags) validate(float)")
 
-    field(:altitude, integer(), derive: "sanitize(tag=strip_tags) validate(float)")
+    field(:altitude, integer(), enforce: true, derive: "sanitize(tag=strip_tags) validate(float)")
 
     field(:units, String.t(),
       default: "m",

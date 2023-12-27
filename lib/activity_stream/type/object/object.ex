@@ -64,7 +64,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
         derive: "sanitize(tag=strip_tags) validate(not_empty_string, uuid)"
       )
 
-      field(:id, String.t(), derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)")
+      field(:id, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
     # URI: https://www.w3.org/ns/activitystreams#name
@@ -77,7 +77,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     )
 
     # Owner: :name
-    field(:nameMap, struct(), struct: Properties.NameMap)
+    field(:nameMap, struct(), struct: Properties.NameMap, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#endTime
     # The date and time describing the actual or expected ending time of the object.
@@ -139,9 +139,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
         derive: "validate(map, not_empty)"
       )
 
-      field(:inReplyTo, String.t(),
-        derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)"
-      )
+      field(:inReplyTo, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
     # URI: https://www.w3.org/ns/activitystreams#location
@@ -173,7 +171,10 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     )
 
     # Owner: :summary
-    field(:summaryMap, struct(), struct: Properties.SummaryMap)
+    field(:summaryMap, struct(),
+      struct: Properties.SummaryMap,
+      derive: "validate(map, not_empty)"
+    )
 
     # URI: https://www.w3.org/ns/activitystreams#tag
     # One or more "tags" that have been associated with an objects. A tag can be any kind of Object.

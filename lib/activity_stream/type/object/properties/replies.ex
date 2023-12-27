@@ -20,7 +20,11 @@ defmodule ActivityStream.Type.Object.Properties.Replies do
       derive: "sanitize(tag=strip_tags) validate(integer)"
     )
 
-    sub_field(:items, Behaviour.lst(), enforce: true, structs: true) do
+    sub_field(:items, Behaviour.lst(),
+      enforce: true,
+      structs: true,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    ) do
       field(:summary, String.t(),
         derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=364, min_len=3)"
       )

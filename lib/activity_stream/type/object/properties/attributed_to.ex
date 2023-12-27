@@ -13,7 +13,7 @@ defmodule ActivityStream.Type.Object.Properties.AttributedTo do
   guardedstruct do
     field(:type, String.t(),
       default: "Person",
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80)"
     )
 
     field(:name, String.t(),

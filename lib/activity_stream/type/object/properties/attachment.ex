@@ -12,7 +12,7 @@ defmodule ActivityStream.Type.Object.Properties.Attachment do
   guardedstruct do
     field(:type, String.t(),
       default: "Image",
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80)"
     )
 
     field(:content, String.t(),

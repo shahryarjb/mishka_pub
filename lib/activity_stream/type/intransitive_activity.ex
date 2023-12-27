@@ -48,7 +48,11 @@ defmodule MishkaPub.ActivityStream.Type.IntransitiveActivity do
     conditional_field(:actor, Behaviour.ssls()) do
       field(:actor, struct(), struct: Properties.Actor, hint: "actorMap")
       field(:actor, Behaviour.lst(), structs: Properties.Actor, hint: "actorList")
-      field(:actor, String.t(), hint: "actor")
+
+      field(:actor, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "actor"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#target
@@ -58,9 +62,13 @@ defmodule MishkaPub.ActivityStream.Type.IntransitiveActivity do
     # For instance, in the activity "John added a movie to his wishlist",
     # the target of the activity is John's wishlist. An activity can have more than one target.
     # Domain:	Activity
-    conditional_field(:target, Behaviour.ssls()) do
+    conditional_field(:target, Behaviour.ss()) do
       field(:target, struct(), struct: Properties.Target, hint: "targetMap")
-      field(:target, String.t(), hint: "target")
+
+      field(:target, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "target"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#result

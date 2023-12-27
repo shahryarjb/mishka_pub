@@ -73,7 +73,10 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     # "tab" (U+0009), "LF" (U+000A), "FF" (U+000C), "CR" (U+000D) or "," (U+002C)
     # characters can be used as a valid link relation.
     # Domain: Link
-    conditional_field(:rel, Behaviour.ls(), structs: true) do
+    conditional_field(:rel, Behaviour.ls(),
+      structs: true,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    ) do
       field(:rel, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
@@ -90,7 +93,7 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     )
 
     # Owner: :name
-    field(:nameMap, struct(), struct: Properties.NameMap)
+    field(:nameMap, struct(), struct: Properties.NameMap, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#width
     # On a Link, specifies a hint as to the rendering width in device-independent pixels of the linked resource.

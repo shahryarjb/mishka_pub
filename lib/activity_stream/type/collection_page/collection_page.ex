@@ -44,7 +44,7 @@ defmodule MishkaPub.ActivityStream.Type.CollectionPage do
         derive: "sanitize(tag=strip_tags) validate(not_empty_string, uuid)"
       )
 
-      field(:id, String.t(), derive: "sanitize(tag=strip_tags) validate(not_empty_string, url)")
+      field(:id, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
     end
 
     # URI: https://www.w3.org/ns/activitystreams#summary
@@ -58,7 +58,10 @@ defmodule MishkaPub.ActivityStream.Type.CollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#items
     # Identifies the items contained in a collection. The items might be ordered or unordered.
     # Domain:	Collection
-    field(:items, Behaviour.lst(), structs: Properties.Items)
+    field(:items, Behaviour.lst(),
+      structs: Properties.Items,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    )
 
     # URI: https://www.w3.org/ns/activitystreams#totalItems
     # A non-negative integer specifying the total number of objects contained by the logical
@@ -73,25 +76,37 @@ defmodule MishkaPub.ActivityStream.Type.CollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#current
     # In a paged Collection, indicates the page that contains the most recently updated member items.
     # Domain:	Collection
-    conditional_field(:current, Behaviour.ssls()) do
+    conditional_field(:current, Behaviour.ss()) do
       field(:current, struct(), struct: Properties.Current, hint: "currentMap")
-      field(:current, String.t(), hint: "current")
+
+      field(:current, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "current"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#first
     # In a paged Collection, indicates the furthest preceeding page of items in the collection.
     # Domain:	Collection
-    conditional_field(:first, Behaviour.ssls()) do
+    conditional_field(:first, Behaviour.ss()) do
       field(:first, struct(), struct: Properties.First, hint: "firstMap")
-      field(:first, String.t(), hint: "first")
+
+      field(:first, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "first"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#last
     # In a paged Collection, indicates the furthest proceeding page of the collection.
     # Domain:	Collection
-    conditional_field(:last, Behaviour.ssls()) do
+    conditional_field(:last, Behaviour.ss()) do
       field(:last, struct(), struct: Properties.Last, hint: "lastMap")
-      field(:last, String.t(), hint: "last")
+
+      field(:last, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "last"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#partOf
@@ -104,17 +119,25 @@ defmodule MishkaPub.ActivityStream.Type.CollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#next
     # In a paged Collection, indicates the next page of items.
     # Domain:	CollectionPage
-    conditional_field(:next, Behaviour.ssls()) do
+    conditional_field(:next, Behaviour.ss()) do
       field(:next, struct(), struct: Next, hint: "nextMap")
-      field(:next, String.t(), hint: "next")
+
+      field(:next, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "next"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#prev
     # In a paged Collection, identifies the previous page of items.
     # Domain:	CollectionPage
-    conditional_field(:prev, Behaviour.ssls()) do
+    conditional_field(:prev, Behaviour.ss()) do
       field(:prev, struct(), struct: Prev, hint: "prevMap")
-      field(:prev, String.t(), hint: "prev")
+
+      field(:prev, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "prev"
+      )
     end
   end
 end

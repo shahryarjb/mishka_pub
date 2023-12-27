@@ -85,10 +85,13 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     # Subproperty Of:	attributedTo
     # TODO: we need to check this part as a multi list
     conditional_field(:actor, Behaviour.ssls()) do
-      field(:actor, struct(), struct: Properties.Actor)
+      field(:actor, struct(), struct: Properties.Actor, derive: "validate(map, not_empty)")
 
-      conditional_field(:actor, Behaviour.ssls(), structs: true) do
-        field(:actor, struct(), struct: Properties.Actor)
+      conditional_field(:actor, Behaviour.ssls(),
+        structs: true,
+        derive: "validate(list, not_empty, not_flatten_empty_item)"
+      ) do
+        field(:actor, struct(), struct: Properties.Actor, derive: "validate(map, not_empty)")
 
         field(:actor, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
       end
@@ -101,7 +104,11 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     # most of the other kinds of objects defined in the Activity Vocabulary, including other
     # Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection.
     conditional_field(:object, Behaviour.ssls()) do
-      field(:object, struct(), struct: MishkaPub.ActivityStream.Type.Object, hint: "objectMap")
+      field(:object, struct(),
+        struct: MishkaPub.ActivityStream.Type.Object,
+        derive: "validate(map, not_empty)",
+        hint: "objectMap"
+      )
 
       field(:object, String.t(),
         derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",

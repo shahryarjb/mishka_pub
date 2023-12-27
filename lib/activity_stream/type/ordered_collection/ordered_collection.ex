@@ -52,31 +52,46 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollection do
     # URI: https://www.w3.org/ns/activitystreams#current
     # In a paged Collection, indicates the page that contains the most recently updated member items.
     # Domain:	Collection
-    conditional_field(:current, Behaviour.ssls()) do
+    conditional_field(:current, Behaviour.ss()) do
       field(:current, struct(), struct: Properties.Current, hint: "currentMap")
-      field(:current, String.t(), hint: "current")
+
+      field(:current, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "current"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#first
     # In a paged Collection, indicates the furthest preceeding page of items in the collection.
     # Domain:	Collection
-    conditional_field(:first, Behaviour.ssls()) do
+    conditional_field(:first, Behaviour.ss()) do
       field(:first, struct(), struct: Properties.First, hint: "firstMap")
-      field(:first, String.t(), hint: "first")
+
+      field(:first, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "first"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#last
     # In a paged Collection, indicates the furthest proceeding page of the collection.
     # Domain:	Collection
-    conditional_field(:last, Behaviour.ssls()) do
+    conditional_field(:last, Behaviour.ss()) do
       field(:last, struct(), struct: Properties.Last, hint: "lastMap")
-      field(:last, String.t(), hint: "last")
+
+      field(:last, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "last"
+      )
     end
 
     # URI: none
     # Ordered Items
     # Domain: any
     # TODO: We should cover a standard properties, because the Ordered Items can be anything no limited
-    field(:orderedItems, Behaviour.lst(), structs: OrderedItems)
+    field(:orderedItems, Behaviour.lst(),
+      structs: OrderedItems,
+      derive: "validate(list, not_empty, not_flatten_empty_item)"
+    )
   end
 end
