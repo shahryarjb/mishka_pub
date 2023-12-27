@@ -1,6 +1,14 @@
 defmodule ActivityStream.Type.Object.Properties.Image do
   use GuardedStruct
 
+  # URI: https://www.w3.org/ns/activitystreams#image
+  # Indicates an entity that describes an image for this object.
+  # Unlike the icon property, there are no aspect ratio or display size limitations assumed.
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # type | name | url --> href | mediaType
+  # ---------------------------------------------------------------------------------------
+  # Domain: Object
   guardedstruct do
     field(:type, String.t(),
       default: "Image",

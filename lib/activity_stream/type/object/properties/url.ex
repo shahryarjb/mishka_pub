@@ -1,6 +1,13 @@
 defmodule ActivityStream.Type.Object.Properties.Url do
   use GuardedStruct
 
+  # URI: https://www.w3.org/ns/activitystreams#url
+  # Identifies one or more links to representations of the object
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # href | mediaType
+  # ---------------------------------------------------------------------------------------
+  # Domain:	Object
   guardedstruct do
     field(:href, String.t(),
       enforce: true,

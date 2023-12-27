@@ -2,6 +2,13 @@ defmodule ActivityStream.Type.Object.Properties.Preview do
   use GuardedStruct
   alias ActivityStream.Type.Object.Properties.Url
 
+  # URI: https://www.w3.org/ns/activitystreams#preview
+  # Identifies an entity that provides a preview of this object.
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # type | name | duration | url --> href | mediaType
+  # ---------------------------------------------------------------------------------------
+  # Domain: Link | Object
   guardedstruct do
     field(:type, String.t(),
       default: "Video",

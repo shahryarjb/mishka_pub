@@ -1,6 +1,13 @@
 defmodule ActivityStream.Type.Object.Properties.Location do
   use GuardedStruct
 
+  # URI: https://www.w3.org/ns/activitystreams#location
+  # Indicates one or more physical or logical locations associated with the object.
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # type | name | longitude | latitude | altitude | units
+  # ---------------------------------------------------------------------------------------
+  # Domain: Object
   guardedstruct do
     field(:type, String.t(), derive: "sanitize(tag=strip_tags) validate(not_empty_string)")
 

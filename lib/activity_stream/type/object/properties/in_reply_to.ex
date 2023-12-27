@@ -1,6 +1,13 @@
 defmodule ActivityStream.Type.Object.Properties.InReplyTo do
   use GuardedStruct
 
+  # URI: https://www.w3.org/ns/activitystreams#inReplyTo
+  # Indicates one or more entities for which this object is considered a response.
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # type | summary | content
+  # ---------------------------------------------------------------------------------------
+  # Domain: Object
   guardedstruct do
     field(:type, String.t(),
       enforce: true,

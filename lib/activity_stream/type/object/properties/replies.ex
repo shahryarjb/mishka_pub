@@ -2,6 +2,13 @@ defmodule ActivityStream.Type.Object.Properties.Replies do
   use GuardedStruct
   alias ActivityStream.Behaviour
 
+  # URI: https://www.w3.org/ns/activitystreams#replies
+  # Identifies a Collection containing objects considered to be responses to this object.
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # type | totalItems | items --> type | content | inReplyTo
+  # ---------------------------------------------------------------------------------------
+  # Domain: Object
   guardedstruct do
     field(:type, String.t(),
       default: "Collection",
