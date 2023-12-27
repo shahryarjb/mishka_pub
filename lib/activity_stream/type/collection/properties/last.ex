@@ -1,6 +1,13 @@
 defmodule ActivityStream.Type.Collection.Properties.Last do
   use GuardedStruct
 
+  # URI: https://www.w3.org/ns/activitystreams#last
+  # In a paged Collection, indicates the furthest proceeding page of the collection.
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # type | summary | href
+  # ---------------------------------------------------------------------------------------
+  # Domain:	Collection
   guardedstruct do
     field(:type, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)",
