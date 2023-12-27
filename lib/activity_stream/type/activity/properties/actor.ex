@@ -3,6 +3,16 @@ defmodule ActivityStream.Type.Activity.Properties.Actor do
 
   @types ["Application", "Group", "Organization", "Person", "Service"]
 
+  # URI: https://www.w3.org/ns/activitystreams#actor
+  # Describes one or more entities that either performed or are expected to perform the activity.
+  # Any single activity can have multiple actors. The actor may be specified using an indirect Link.
+  # Subproperty Of:	attributedTo
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # id | type | summary
+  # ---------------------------------------------------------------------------------------
+  # Domain:	Activity
+  # Subproperty Of:	attributedTo
   guardedstruct do
     field(:id, String.t(), derive: "sanitize(tag=strip_tags) validate(url)")
 

@@ -1,6 +1,17 @@
 defmodule ActivityStream.Type.Activity.Properties.Target do
   use GuardedStruct
 
+  # URI: URI: https://www.w3.org/ns/activitystreams#target
+  # Describes the indirect object, or target, of the activity.
+  # The precise meaning of the target is largely dependent on the type of action
+  # being described but will often be the object of the English preposition "to".
+  # For instance, in the activity "John added a movie to his wishlist",
+  # the target of the activity is John's wishlist. An activity can have more than one target.
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # type | name
+  # ---------------------------------------------------------------------------------------
+  # Domain:	Activity
   # TODO: it should be limited as a type to some items
   guardedstruct do
     field(:type, String.t(),

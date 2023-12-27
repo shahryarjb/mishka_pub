@@ -27,9 +27,9 @@ defmodule MishkaPub.ActivityStream.Type.Object do
   # ---------------------------------------------------------------------------------------
   # Properties:
   # attachment | attributedTo | audience | content | context | name | endTime |
-  #  generator | icon | image | inReplyTo | location | preview | published |
-  #  replies | startTime | summary | tag | updated | url | to | bto |
-  #  cc | bcc | mediaType | duration
+  # generator | icon | image | inReplyTo | location | preview | published |
+  # replies | startTime | summary | tag | updated | url | to | bto |
+  # cc | bcc | mediaType | duration
   # ---------------------------------------------------------------------------------------
   # different Types (These can be Inherited or call the object again as child):
   # "Object", "Article", "Audio", "Document", "Event", "Image", "Note", "Page",

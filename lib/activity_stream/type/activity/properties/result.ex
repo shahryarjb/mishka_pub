@@ -1,6 +1,15 @@
 defmodule ActivityStream.Type.Activity.Properties.Result do
   use GuardedStruct
 
+  # URI: https://www.w3.org/ns/activitystreams#result
+  # Describes the result of the activity. For instance, if a particular action
+  # results in the creation of a new resource, the result property can be used
+  # to describe that new resource.
+  # ---------------------------------------------------------------------------------------
+  # Properties:
+  # type | name
+  # ---------------------------------------------------------------------------------------
+  # Domain:	Activity
   guardedstruct do
     field(:type, String.t(),
       enforce: true,
