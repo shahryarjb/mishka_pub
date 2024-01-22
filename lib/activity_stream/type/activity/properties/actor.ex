@@ -6,7 +6,6 @@ defmodule ActivityStream.Type.Activity.Properties.Actor do
   # URI: https://www.w3.org/ns/activitystreams#actor
   # Describes one or more entities that either performed or are expected to perform the activity.
   # Any single activity can have multiple actors. The actor may be specified using an indirect Link.
-  # Subproperty Of:	attributedTo
   # ---------------------------------------------------------------------------------------
   # Properties:
   # id | type | summary
@@ -14,7 +13,7 @@ defmodule ActivityStream.Type.Activity.Properties.Actor do
   # Domain:	Activity
   # Subproperty Of:	attributedTo
   guardedstruct do
-    field(:id, String.t(), derive: "sanitize(tag=strip_tags) validate(url)")
+    field(:id, String.t(), enforce: true, derive: "sanitize(tag=strip_tags) validate(url)")
 
     field(:type, String.t(),
       derive: "sanitize(tag=strip_tags) validate(enum=String[#{Enum.join(@types, "::")}])",

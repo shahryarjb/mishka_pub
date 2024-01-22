@@ -22,14 +22,14 @@ defmodule MishkaPub.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:plug, "~> 1.14"},
+      {:plug, "~> 1.15"},
       {:html_sanitize_ex, "~> 1.4.3"},
       {:email_checker, "~> 0.2.4"},
       {:ex_url, "~> 2.0"},
-      {:ex_phone_number, "~> 0.4.2"},
+      {:ex_phone_number, "~> 0.4.3"},
       {:mishka_developer_tools, github: "mishka-group/mishka_developer_tools"},
       {:ecto_sql, "~> 3.11"},
-      {:ex_doc, "~> 0.31", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.31.1", only: :dev, runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end

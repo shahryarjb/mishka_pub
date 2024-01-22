@@ -67,7 +67,7 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     # Domain: Object | Link
     field(:type, String.t(),
       derive: "sanitize(tag=strip_tags) validate(enum=String[#{Enum.join(@types, "::")}])",
-      default: "Link"
+      default: "Create"
     )
 
     # URI:	https://www.w3.org/ns/activitystreams#summary
@@ -83,27 +83,63 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     # Any single activity can have multiple actors. The actor may be specified using an indirect Link.
     # Domain:	Activity
     # Subproperty Of:	attributedTo
-    # TODO: we need to check this part as a multi list
-    conditional_field(:actor, Behaviour.ssls()) do
-      field(:actor, struct(), struct: Properties.Actor, derive: "validate(map, not_empty)")
+    # Example:
+    # {
+    #   "actor": "http://sally.example.org",
+    #   "object": "http://example.org/foo"
+    # }
+    # ----------------------------------------------------
+    # {
+    #   "actor": {
+    #     "type": "Person",
+    #     "id": "http://sally.example.org",
+    #     "summary": "Sally"
+    #   },
+    #   "object": "http://example.org/foo"
+    # }
+    # ----------------------------------------------------
+    # {
+    #   "actor": [
+    #     "http://joe.example.org",
+    #     {
+    #       "type": "Person",
+    #       "id": "http://sally.example.org",
+    #       "name": "Sally"
+    #     }
+    #   ],
+    #   "object": "http://example.org/foo"
+    # }
+    conditional_field(:actor, Behaviour.ssls(),
+      structs: true,
+      enforce: true,
+      derive: "validate(list, not_empty)"
+    ) do
+      field(:actor, Behaviour.sls(),
+        struct: Properties.Actor,
+        derive: "validate(map, not_empty)",
+        hint: "actorListMap"
+      )
 
-      conditional_field(:actor, Behaviour.ssls(),
-        structs: true,
-        derive: "validate(list, not_empty, not_flatten_empty_item)"
-      ) do
-        field(:actor, struct(), struct: Properties.Actor, derive: "validate(map, not_empty)")
+      field(:actor, struct(),
+        structs: Properties.Actor,
+        derive: "validate(list, not_empty)",
+        hint: "actorMap"
+      )
 
-        field(:actor, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
-      end
-
-      field(:actor, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
+      field(:actor, String.t(),
+        derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
+        hint: "actorStringUrl"
+      )
     end
 
     # URI: https://www.w3.org/ns/activitystreams#Object
     # Describes an object of any kind. The Object type serves as the base type for
     # most of the other kinds of objects defined in the Activity Vocabulary, including other
     # Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection.
-    conditional_field(:object, Behaviour.ssls()) do
+    conditional_field(:object, Behaviour.ssls(),
+      enforce: true,
+      derive: "validate(either=[string, map], not_empty)"
+    ) do
       field(:object, struct(),
         struct: MishkaPub.ActivityStream.Type.Object,
         derive: "validate(map, not_empty)",
@@ -123,12 +159,31 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     # For instance, in the activity "John added a movie to his wishlist",
     # the target of the activity is John's wishlist. An activity can have more than one target.
     # Domain:	Activity
-    conditional_field(:target, Behaviour.ssls()) do
-      field(:target, struct(), struct: Properties.Target, hint: "targetMap")
+    # Example:
+    # {
+    #   "actor": "http://sally.example.org",
+    #   "object": "http://example.org/posts/1",
+    #   "target": "http://john.example.org"
+    # }
+    # ----------------------------------------------------
+    # {
+    #   "actor": "http://sally.example.org",
+    #   "object": "http://example.org/posts/1",
+    #   "target": {
+    #     "type": "Person",
+    #     "name": "John"
+    #   }
+    # }
+    conditional_field(:target, Behaviour.ssls(), derive: "validate(map, not_empty)") do
+      field(:target, struct(),
+        struct: Properties.Target,
+        derive: "validate(map, not_empty)",
+        hint: "targetMap"
+      )
 
       field(:target, String.t(),
         derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
-        hint: "target"
+        hint: "targetStringUrl"
       )
     end
 
@@ -137,7 +192,17 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     # results in the creation of a new resource, the result property can
     # be used to describe that new resource.
     # Domain:	Activity
-    field(:result, struct(), struct: Properties.Result)
+    # Example
+    # {
+    #   "type": ["Activity", "http://www.verbs.example/Check"],
+    #   "actor": "http://sally.example.org",
+    #   "object": "http://example.org/flights/1",
+    #   "result": {
+    #     "type": "http://www.types.example/flightstatus",
+    #     "name": "On Time"
+    #   }
+    # }
+    field(:result, struct(), struct: Properties.Result, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#origin
     # Describes an indirect object of the activity from which the activity is directed.
@@ -145,11 +210,38 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     # For instance, in the activity "John moved an item to List B from List A",
     # the origin of the activity is "List A".
     # Domain:	Activity
-    field(:origin, struct(), struct: Properties.Origin)
+    # Example:
+    # {
+    #   "object": "http://example.org/posts/1",
+    #   "target": {
+    #     "type": "Collection",
+    #     "name": "List B"
+    #   },
+    #   "origin": {
+    #     "type": "Collection",
+    #     "name": "List A"
+    #   }
+    # }
+    field(:origin, struct(), struct: Properties.Origin, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#instrument
     # Identifies one or more objects used (or to be used) in the completion of an Activity.
     # Domain:	Activity
-    field(:instrument, struct(), struct: Properties.Instrument)
+    # Example:
+    # {
+    #   "actor": {
+    #     "type": "Person",
+    #     "name": "Sally"
+    #   },
+    #   "object": "http://example.org/foo.mp3",
+    #   "instrument": {
+    #     "type": "Service",
+    #     "name": "Acme Music Service"
+    #   }
+    # }
+    field(:instrument, struct(),
+      struct: Properties.Instrument,
+      derive: "validate(map, not_empty)"
+    )
   end
 end

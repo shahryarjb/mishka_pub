@@ -261,6 +261,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # section 3.3.6 (e.g. a period of 5 seconds is represented as "PT0H0M5S").
     # Domain:	Object
     field(:duration, String.t(),
+      domain: "!type=String[Audio, Video]",
       derive:
         "sanitize(tag=strip_tags) validate(not_empty_string, max_len=10, custom=[MishkaPub.Helper.Extra, is_duration?])"
     )

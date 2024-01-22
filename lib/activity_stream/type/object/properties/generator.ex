@@ -1,10 +1,8 @@
 defmodule ActivityStream.Type.Object.Properties.Generator do
   use GuardedStruct
 
-  # URI: https://www.w3.org/ns/activitystreams#icon
-  # Indicates an entity that describes an icon for this object.
-  # The image should have an aspect ratio of one (horizontal) to one (vertical)
-  # and should be suitable for presentation at a small size.
+  # URI: https://www.w3.org/ns/activitystreams#generator
+  # Identifies the entity (e.g. an application) that generated the object.
   # ---------------------------------------------------------------------------------------
   # Properties:
   # type | name
