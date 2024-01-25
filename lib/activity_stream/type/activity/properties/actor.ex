@@ -12,6 +12,32 @@ defmodule ActivityStream.Type.Activity.Properties.Actor do
   # ---------------------------------------------------------------------------------------
   # Domain:	Activity
   # Subproperty Of:	attributedTo
+  # Example:
+  # {
+  #   "actor": "http://sally.example.org",
+  #   "object": "http://example.org/foo"
+  # }
+  # ----------------------------------------------------
+  # {
+  #   "actor": {
+  #     "type": "Person",
+  #     "id": "http://sally.example.org",
+  #     "summary": "Sally"
+  #   },
+  #   "object": "http://example.org/foo"
+  # }
+  # ----------------------------------------------------
+  # {
+  #   "actor": [
+  #     "http://joe.example.org",
+  #     {
+  #       "type": "Person",
+  #       "id": "http://sally.example.org",
+  #       "name": "Sally"
+  #     }
+  #   ],
+  #   "object": "http://example.org/foo"
+  # }
   guardedstruct do
     field(:id, String.t(), enforce: true, derive: "sanitize(tag=strip_tags) validate(url)")
 
