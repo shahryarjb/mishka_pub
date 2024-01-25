@@ -11,10 +11,22 @@ defmodule ActivityStream.Type.Activity.Properties.Origin do
   # type | name
   # ---------------------------------------------------------------------------------------
   # Domain:	Activity
+  # Example:
+  # {
+  #   "object": "http://example.org/posts/1",
+  #   "target": {
+  #     "type": "Collection",
+  #     "name": "List B"
+  #   },
+  #   "origin": {
+  #     "type": "Collection",
+  #     "name": "List A"
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)",
-      default: "Person"
+      enforce: true
     )
 
     field(:name, String.t(),

@@ -12,11 +12,25 @@ defmodule ActivityStream.Type.Activity.Properties.Target do
   # type | name
   # ---------------------------------------------------------------------------------------
   # Domain:	Activity
-  # TODO: it should be limited as a type to some items
+  # Example:
+  # {
+  #   "actor": "http://sally.example.org",
+  #   "object": "http://example.org/posts/1",
+  #   "target": "http://john.example.org"
+  # }
+  # ----------------------------------------------------
+  # {
+  #   "actor": "http://sally.example.org",
+  #   "object": "http://example.org/posts/1",
+  #   "target": {
+  #     "type": "Person",
+  #     "name": "John"
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)",
-      default: "Person"
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)"
     )
 
     field(:name, String.t(),

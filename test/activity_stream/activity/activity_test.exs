@@ -10,6 +10,7 @@ defmodule MishkaPubTest.ActivityStream.Activity do
         [%{id: "https://google.com", type: "Person", summary: "To Dev"}],
         "https://google.com"
       ],
+      instrument: 1,
       object: "https://google.com"
     }
     |> Activity.builder()

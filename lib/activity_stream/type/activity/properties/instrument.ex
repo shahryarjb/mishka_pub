@@ -8,10 +8,22 @@ defmodule ActivityStream.Type.Activity.Properties.Instrument do
   # type | name
   # ---------------------------------------------------------------------------------------
   # Domain:	Activity
+  # Example:
+  # {
+  #   "actor": {
+  #     "type": "Person",
+  #     "name": "Sally"
+  #   },
+  #   "object": "http://example.org/foo.mp3",
+  #   "instrument": {
+  #     "type": "Service",
+  #     "name": "Acme Music Service"
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)",
-      default: "Person"
+      enforce: true
     )
 
     field(:name, String.t(),

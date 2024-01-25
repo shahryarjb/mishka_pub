@@ -10,10 +10,20 @@ defmodule ActivityStream.Type.Activity.Properties.Result do
   # type | name
   # ---------------------------------------------------------------------------------------
   # Domain:	Activity
+  # Example
+  # {
+  #   "type": ["Activity", "http://www.verbs.example/Check"],
+  #   "actor": "http://sally.example.org",
+  #   "object": "http://example.org/flights/1",
+  #   "result": {
+  #     "type": "http://www.types.example/flightstatus",
+  #     "name": "On Time"
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
       enforce: true,
-      derive: "sanitize(tag=strip_tags) validate(url, max_len=160)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)"
     )
 
     field(:name, String.t(),
