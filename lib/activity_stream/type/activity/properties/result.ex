@@ -8,6 +8,51 @@ defmodule ActivityStream.Type.Activity.Properties.Result do
   # ---------------------------------------------------------------------------------------
   # Properties:
   # type | name
+  # TODO:::Consideration: This Object should be changed based on our program.
+  # Extra data
+  # Because Question objects are also instances of Activity, the result property
+  # can be used to express the results or outcome of the Question (as appropriate):
+  # Example
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "name": "A question about robots",
+  #   "id": "http://polls.example.org/question/1",
+  #   "type": "Question",
+  #   "content": "I'd like to build a robot to feed my cat. Which platform is best?",
+  #   "oneOf": [
+  #     {
+  #       "name": "arduino"
+  #     },
+  #     {
+  #       "name": "raspberry pi"
+  #     }
+  #   ],
+  #   "replies": {
+  #     "type": "Collection",
+  #     "totalItems": 3,
+  #     "items": [
+  #       {
+  #         "attributedTo": "http://sally.example.org",
+  #         "inReplyTo": "http://polls.example.org/question/1",
+  #         "name": "arduino"
+  #       },
+  #       {
+  #         "attributedTo": "http://joe.example.org",
+  #         "inReplyTo": "http://polls.example.org/question/1",
+  #         "name": "arduino"
+  #       },
+  #       {
+  #         "attributedTo": "http://john.example.org",
+  #         "inReplyTo": "http://polls.example.org/question/1",
+  #         "name": "raspberry pi"
+  #       }
+  #     ]
+  #   },
+  #   "result": {
+  #     "type": "Note",
+  #     "content": "Users are favoriting &quot;arduino&quot; by a 33% margin."
+  #   }
+  # }
   # ---------------------------------------------------------------------------------------
   # Domain:	Activity
   # Example

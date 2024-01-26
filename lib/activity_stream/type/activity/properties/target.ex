@@ -10,6 +10,7 @@ defmodule ActivityStream.Type.Activity.Properties.Target do
   # ---------------------------------------------------------------------------------------
   # Properties:
   # type | name
+  # TODO:::Consideration: This Object should be changed based on our program.
   # ---------------------------------------------------------------------------------------
   # Domain:	Activity
   # Example:

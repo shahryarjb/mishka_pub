@@ -9,6 +9,32 @@ defmodule ActivityStream.Type.Activity.Properties.Origin do
   # ---------------------------------------------------------------------------------------
   # Properties:
   # type | name
+  # TODO:::Consideration: This Object should be changed based on our program.
+  # ---------------------------------------------------------------------------------------
+  # The origin and target properties of an Activity respectively identify
+  # the entities from which and to which the action is directed. For instance,
+  # in the English statement, "Sally moved the file from Folder A to Folder B",
+  # the origin is "Folder A" and the target is "Folder B".
+  # This activity is illustrated in the example below:
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "summary": "Sally moved the sales figures from Folder A to Folder B",
+  #   "type": "Move",
+  #   "actor": "http://sally.example.org",
+  #   "object": {
+  #     "type": "Document",
+  #     "name": "sales figures"
+  #   },
+  #   "origin": {
+  #     "type": "Collection",
+  #     "name": "Folder A"
+  #   },
+  #   "target": {
+  #     "type": "Collection",
+  #     "name": "Folder B"
+  #   }
+  # }
   # ---------------------------------------------------------------------------------------
   # Domain:	Activity
   # Example:
