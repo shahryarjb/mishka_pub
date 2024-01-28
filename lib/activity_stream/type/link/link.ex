@@ -1,7 +1,7 @@
 defmodule MishkaPub.ActivityStream.Type.Link do
   use GuardedStruct
   alias ActivityStream.Behaviour
-  alias ActivityStream.Type.Link.Properties
+  alias ActivityStream.Type.Object.Properties
 
   @types [
     "Article",
@@ -56,11 +56,28 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     # URI: https://www.w3.org/ns/activitystreams#href
     # The target resource pointed to by a Link.
     # Domain: Link
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "type": "Link",
+    #   "href": "http://example.org/abc",
+    #   "mediaType": "text/html",
+    #   "name": "Previous"
+    # }
     field(:href, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
 
     # URI: https://www.w3.org/ns/activitystreams#hreflang
     # The target resource pointed to by a Link.
     # Domain: Link
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "type": "Link",
+    #   "href": "http://example.org/abc",
+    #   "hreflang": "en",
+    #   "mediaType": "text/html",
+    #   "name": "Previous"
+    # }
     field(:hreflang, String.t(),
       derive: "sanitize(tag=strip_tags) validate(enum=String[en::fa])",
       default: "en"
@@ -73,6 +90,16 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     # "tab" (U+0009), "LF" (U+000A), "FF" (U+000C), "CR" (U+000D) or "," (U+002C)
     # characters can be used as a valid link relation.
     # Domain: Link
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "type": "Link",
+    #   "href": "http://example.org/abc",
+    #   "hreflang": "en",
+    #   "mediaType": "text/html",
+    #   "name": "Preview",
+    #   "rel": ["canonical", "preview"]
+    # }
     conditional_field(:rel, Behaviour.ls(),
       structs: true,
       derive: "validate(list, not_empty, not_flatten_empty_item)"
@@ -88,16 +115,40 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     # A simple, human-readable, plain-text name for the object. HTML markup must not be included.
     # The name may be expressed using multiple language-tagged values.
     # Domain:	Object | Link
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "type": "Note",
+    #   "name": "A simple note"
+    # }
     field(:name, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=120, min_len=3)"
     )
 
     # Owner: :name
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "type": "Note",
+    #   "nameMap": {
+    #     "en": "A simple note",
+    #     "es": "Una nota sencilla",
+    #     "zh-Hans": "一段简单的笔记"
+    #   }
+    # }
     field(:nameMap, struct(), struct: Properties.NameMap, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#width
     # On a Link, specifies a hint as to the rendering width in device-independent pixels of the linked resource.
     # Domain:	Link
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "type": "Link",
+    #   "href": "http://example.org/image.png",
+    #   "height": 100,
+    #   "width": 100
+    # }
     field(:width, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
@@ -106,6 +157,14 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     # URI: https://www.w3.org/ns/activitystreams#height
     # On a Link, specifies a hint as to the rendering height in device-independent pixels of the linked resource.
     # Domain:	Link
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "type": "Link",
+    #   "href": "http://example.org/image.png",
+    #   "height": 100,
+    #   "width": 100
+    # }
     field(:height, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
@@ -114,6 +173,22 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     # URI: https://www.w3.org/ns/activitystreams#preview
     # Identifies an entity that provides a preview of this object.
     # Domain: Link | Object
-    field(:preview, struct(), struct: ActivityStream.Type.Object.Properties.Preview)
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "type": "Video",
+    #   "name": "Cool New Movie",
+    #   "duration": "PT2H30M",
+    #   "preview": {
+    #     "type": "Video",
+    #     "name": "Trailer",
+    #     "duration": "PT1M",
+    #     "url": {
+    #       "href": "http://example.org/trailer.mkv",
+    #       "mediaType": "video/mkv"
+    #     }
+    #   }
+    # }
+    field(:preview, struct(), struct: Properties.Preview)
   end
 end
