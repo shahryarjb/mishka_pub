@@ -44,6 +44,23 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     # view of the collection. This number might not reflect the actual number
     # of items serialized within the Collection object instance.
     # Domain:	Collection
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's notes",
+    #   "type": "Collection",
+    #   "totalItems": 2,
+    #   "items": [
+    #     {
+    #       "type": "Note",
+    #       "name": "Which Staircase Should I Use"
+    #     },
+    #     {
+    #       "type": "Note",
+    #       "name": "Something to Remember"
+    #     }
+    #   ]
+    # }
     field(:totalItems, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=0)"
@@ -52,11 +69,58 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     # URI: https://www.w3.org/ns/activitystreams#items
     # Identifies the items contained in a collection. The items might be ordered or unordered.
     # Domain:	Collection
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's notes",
+    #   "type": "Collection",
+    #   "totalItems": 2,
+    #   "items": [
+    #     {
+    #       "type": "Note",
+    #       "name": "Reminder for Going-Away Party"
+    #     },
+    #     {
+    #       "type": "Note",
+    #       "name": "Meeting 2016-11-17"
+    #     }
+    #   ]
+    # }
     field(:items, struct(), structs: Properties.Items)
 
     # URI: https://www.w3.org/ns/activitystreams#current
     # In a paged Collection, indicates the page that contains the most recently updated member items.
     # Domain:	Collection
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's blog posts",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "current": "http://example.org/collection",
+    #   "items": [
+    #     "http://example.org/posts/1",
+    #     "http://example.org/posts/2",
+    #     "http://example.org/posts/3"
+    #   ]
+    # }
+    # -----------------------------------------------------------------------
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's blog posts",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "current": {
+    #     "type": "Link",
+    #     "summary": "Most Recent Items",
+    #     "href": "http://example.org/collection"
+    #   },
+    #   "items": [
+    #     "http://example.org/posts/1",
+    #     "http://example.org/posts/2",
+    #     "http://example.org/posts/3"
+    #   ]
+    # }
     conditional_field(:current, Behaviour.ss()) do
       field(:current, struct(), struct: Properties.Current, hint: "currentMap")
 
@@ -69,6 +133,26 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     # URI: https://www.w3.org/ns/activitystreams#first
     # In a paged Collection, indicates the furthest preceeding page of items in the collection.
     # Domain:	Collection
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's blog posts",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "first": "http://example.org/collection?page=0"
+    # }
+    # -----------------------------------------------------------------------
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's blog posts",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "first": {
+    #     "type": "Link",
+    #     "summary": "First Page",
+    #     "href": "http://example.org/collection?page=0"
+    #   }
+    # }
     conditional_field(:first, Behaviour.ss()) do
       field(:first, struct(), struct: Properties.First, hint: "firstMap")
 
@@ -81,6 +165,26 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     # URI: https://www.w3.org/ns/activitystreams#last
     # In a paged Collection, indicates the furthest proceeding page of the collection.
     # Domain:	Collection
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "A collection",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "last": "http://example.org/collection?page=1"
+    # }
+    # -----------------------------------------------------------------------
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "A collection",
+    #   "type": "Collection",
+    #   "totalItems": 5,
+    #   "last": {
+    #     "type": "Link",
+    #     "summary": "Last Page",
+    #     "href": "http://example.org/collection?page=1"
+    #   }
+    # }
     conditional_field(:last, Behaviour.ss()) do
       field(:last, struct(), struct: Properties.Last, hint: "lastMap")
 
