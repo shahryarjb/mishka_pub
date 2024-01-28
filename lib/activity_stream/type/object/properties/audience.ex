@@ -9,6 +9,17 @@ defmodule ActivityStream.Type.Object.Properties.Audience do
   # type | name
   # ---------------------------------------------------------------------------------------
   # Domain: Object
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "name": "Holiday announcement",
+  #   "type": "Note",
+  #   "content": "Thursday will be a company-wide holiday. Enjoy your day off!",
+  #   "audience": {
+  #     "type": "http://example.org/Organization",
+  #     "name": "ExampleCo LLC"
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
       enforce: true,

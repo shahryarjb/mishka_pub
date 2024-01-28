@@ -9,6 +9,24 @@ defmodule ActivityStream.Type.Object.Properties.Image do
   # type | name | url --> href | mediaType
   # ---------------------------------------------------------------------------------------
   # Domain: Object
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "type": "Image",
+  #   "name": "Cat Jumping on Wagon",
+  #   "url": [
+  #     {
+  #       "type": "Link",
+  #       "href": "http://example.org/image.jpeg",
+  #       "mediaType": "image/jpeg"
+  #     },
+  #     {
+  #       "type": "Link",
+  #       "href": "http://example.org/image.png",
+  #       "mediaType": "image/png"
+  #     }
+  #   ]
+  # }
   guardedstruct do
     field(:type, String.t(),
       default: "Image",

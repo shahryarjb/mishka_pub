@@ -10,6 +10,20 @@ defmodule ActivityStream.Type.Object.Properties.Icon do
   # type | summary | name | url | width | height
   # ---------------------------------------------------------------------------------------
   # Domain: Object
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "summary": "A simple note",
+  #   "type": "Note",
+  #   "content": "This is all there is.",
+  #   "icon": {
+  #     "type": "Image",
+  #     "name": "Note icon",
+  #     "url": "http://example.org/note.png",
+  #     "width": 16,
+  #     "height": 16
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
       enforce: true,

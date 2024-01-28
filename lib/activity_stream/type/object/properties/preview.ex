@@ -9,6 +9,22 @@ defmodule ActivityStream.Type.Object.Properties.Preview do
   # type | name | duration | url --> href | mediaType
   # ---------------------------------------------------------------------------------------
   # Domain: Link | Object
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "type": "Video",
+  #   "name": "Cool New Movie",
+  #   "duration": "PT2H30M",
+  #   "preview": {
+  #     "type": "Video",
+  #     "name": "Trailer",
+  #     "duration": "PT1M",
+  #     "url": {
+  #       "href": "http://example.org/trailer.mkv",
+  #       "mediaType": "video/mkv"
+  #     }
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
       default: "Video",

@@ -10,6 +10,20 @@ defmodule ActivityStream.Type.Object.Properties.Tag do
   # type | id | name
   # ---------------------------------------------------------------------------------------
   # Domain:	Object
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "type": "Image",
+  #   "summary": "Picture of Sally",
+  #   "url": "http://example.org/sally.jpg",
+  #   "tag": [
+  #     {
+  #       "type": "Person",
+  #       "id": "http://sally.example.org",
+  #       "name": "Sally"
+  #     }
+  #   ]
+  # }
   guardedstruct do
     field(:type, String.t(),
       default: "Person",

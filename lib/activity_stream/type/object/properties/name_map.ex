@@ -10,6 +10,16 @@ defmodule ActivityStream.Type.Object.Properties.NameMap do
   # ---------------------------------------------------------------------------------------
   # Domain: Object
   # Owner: :name
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "type": "Note",
+  #   "nameMap": {
+  #     "en": "A simple note",
+  #     "es": "Una nota sencilla",
+  #     "zh-Hans": "一段简单的笔记"
+  #   }
+  # }
   guardedstruct do
     field(:en, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=250, min_len=3)"

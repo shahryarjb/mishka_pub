@@ -9,6 +9,19 @@ defmodule ActivityStream.Type.Object.Properties.Attachment do
   # type | content | url
   # ---------------------------------------------------------------------------------------
   # Domain: Object | Link
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "type": "Note",
+  #   "name": "Have you seen my cat?",
+  #   "attachment": [
+  #     {
+  #       "type": "Image",
+  #       "content": "This is what he looks like.",
+  #       "url": "http://example.org/cat.jpeg"
+  #     }
+  #   ]
+  # }
   guardedstruct do
     field(:type, String.t(),
       default: "Image",

@@ -8,6 +8,20 @@ defmodule ActivityStream.Type.Object.Properties.Location do
   # type | name | longitude | latitude | altitude | units
   # ---------------------------------------------------------------------------------------
   # Domain: Object
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "type": "Person",
+  #   "name": "Sally",
+  #   "location": {
+  #     "name": "Over the Arabian Sea, east of Socotra Island Nature Sanctuary",
+  #     "type": "Place",
+  #     "longitude": 12.34,
+  #     "latitude": 56.78,
+  #     "altitude": 90,
+  #     "units": "m"
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
       enforce: true,

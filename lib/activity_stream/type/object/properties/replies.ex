@@ -9,6 +9,26 @@ defmodule ActivityStream.Type.Object.Properties.Replies do
   # type | totalItems | items --> type | content | inReplyTo
   # ---------------------------------------------------------------------------------------
   # Domain: Object
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "summary": "A simple note",
+  #   "type": "Note",
+  #   "id": "http://www.test.example/notes/1",
+  #   "content": "I am fine.",
+  #   "replies": {
+  #     "type": "Collection",
+  #     "totalItems": 1,
+  #     "items": [
+  #       {
+  #         "summary": "A response to the note",
+  #         "type": "Note",
+  #         "content": "I am glad to hear it.",
+  #         "inReplyTo": "http://www.test.example/notes/1"
+  #       }
+  #     ]
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
       default: "Collection",

@@ -8,6 +8,18 @@ defmodule ActivityStream.Type.Object.Properties.InReplyTo do
   # type | summary | content
   # ---------------------------------------------------------------------------------------
   # Domain: Object
+  # Example:
+  # {
+  #   "@context": "https://www.w3.org/ns/activitystreams",
+  #   "summary": "A simple note",
+  #   "type": "Note",
+  #   "content": "This is all there is.",
+  #   "inReplyTo": {
+  #     "summary": "Previous note",
+  #     "type": "Note",
+  #     "content": "What else is there?"
+  #   }
+  # }
   guardedstruct do
     field(:type, String.t(),
       enforce: true,
