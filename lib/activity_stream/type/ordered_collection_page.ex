@@ -49,6 +49,23 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     # view of the collection. This number might not reflect the actual number
     # of items serialized within the Collection object instance.
     # Domain:	Collection
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's notes",
+    #   "type": "Collection",
+    #   "totalItems": 2,
+    #   "items": [
+    #     {
+    #       "type": "Note",
+    #       "name": "Which Staircase Should I Use"
+    #     },
+    #     {
+    #       "type": "Note",
+    #       "name": "Something to Remember"
+    #     }
+    #   ]
+    # }
     field(:totalItems, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=0)"
@@ -57,6 +74,36 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#current
     # In a paged Collection, indicates the page that contains the most recently updated member items.
     # Domain:	Collection
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's blog posts",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "current": "http://example.org/collection",
+    #   "items": [
+    #     "http://example.org/posts/1",
+    #     "http://example.org/posts/2",
+    #     "http://example.org/posts/3"
+    #   ]
+    # }
+    # -----------------------------------------------------------------------
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's blog posts",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "current": {
+    #     "type": "Link",
+    #     "summary": "Most Recent Items",
+    #     "href": "http://example.org/collection"
+    #   },
+    #   "items": [
+    #     "http://example.org/posts/1",
+    #     "http://example.org/posts/2",
+    #     "http://example.org/posts/3"
+    #   ]
+    # }
     conditional_field(:current, Behaviour.ss()) do
       field(:current, struct(), struct: Properties.Current, hint: "currentMap")
 
@@ -69,6 +116,26 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#first
     # In a paged Collection, indicates the furthest preceeding page of items in the collection.
     # Domain:	Collection
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's blog posts",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "first": "http://example.org/collection?page=0"
+    # }
+    # -----------------------------------------------------------------------
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's blog posts",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "first": {
+    #     "type": "Link",
+    #     "summary": "First Page",
+    #     "href": "http://example.org/collection?page=0"
+    #   }
+    # }
     conditional_field(:first, Behaviour.ss()) do
       field(:first, struct(), struct: Properties.First, hint: "firstMap")
 
@@ -81,6 +148,26 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#last
     # In a paged Collection, indicates the furthest proceeding page of the collection.
     # Domain:	Collection
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "A collection",
+    #   "type": "Collection",
+    #   "totalItems": 3,
+    #   "last": "http://example.org/collection?page=1"
+    # }
+    # -----------------------------------------------------------------------
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "A collection",
+    #   "type": "Collection",
+    #   "totalItems": 5,
+    #   "last": {
+    #     "type": "Link",
+    #     "summary": "Last Page",
+    #     "href": "http://example.org/collection?page=1"
+    #   }
+    # }
     conditional_field(:last, Behaviour.ss()) do
       field(:last, struct(), struct: Properties.Last, hint: "lastMap")
 
@@ -93,6 +180,24 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#partOf
     # Identifies the Collection to which a CollectionPage objects items belong.
     # Domain:	CollectionPage
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Page 1 of Sally's notes",
+    #   "type": "CollectionPage",
+    #   "id": "http://example.org/collection?page=1",
+    #   "partOf": "http://example.org/collection",
+    #   "items": [
+    #     {
+    #       "type": "Note",
+    #       "name": "Pizza Toppings to Try"
+    #     },
+    #     {
+    #       "type": "Note",
+    #       "name": "Thought about California"
+    #     }
+    #   ]
+    # }
     field(:partOf, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, url, max_len=160)"
     )
@@ -100,6 +205,34 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#next
     # In a paged Collection, indicates the next page of items.
     # Domain:	CollectionPage
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Page 2 of Sally's blog posts",
+    #   "type": "CollectionPage",
+    #   "next": "http://example.org/collection?page=2",
+    #   "items": [
+    #     "http://example.org/posts/1",
+    #     "http://example.org/posts/2",
+    #     "http://example.org/posts/3"
+    #   ]
+    # }
+    # ----------------------------------
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Page 2 of Sally's blog posts",
+    #   "type": "CollectionPage",
+    #   "next": {
+    #     "type": "Link",
+    #     "name": "Next Page",
+    #     "href": "http://example.org/collection?page=2"
+    #   },
+    #   "items": [
+    #     "http://example.org/posts/1",
+    #     "http://example.org/posts/2",
+    #     "http://example.org/posts/3"
+    #   ]
+    # }
     conditional_field(:next, Behaviour.ss()) do
       field(:next, struct(), struct: Next, hint: "nextMap")
 
@@ -112,6 +245,34 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#prev
     # In a paged Collection, identifies the previous page of items.
     # Domain:	CollectionPage
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Page 1 of Sally's blog posts",
+    #   "type": "CollectionPage",
+    #   "prev": "http://example.org/collection?page=1",
+    #   "items": [
+    #     "http://example.org/posts/1",
+    #     "http://example.org/posts/2",
+    #     "http://example.org/posts/3"
+    #   ]
+    # }
+    # ----------------------------------
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Page 1 of Sally's blog posts",
+    #   "type": "CollectionPage",
+    #   "prev": {
+    #     "type": "Link",
+    #     "name": "Previous Page",
+    #     "href": "http://example.org/collection?page=1"
+    #   },
+    #   "items": [
+    #     "http://example.org/posts/1",
+    #     "http://example.org/posts/2",
+    #     "http://example.org/posts/3"
+    #   ]
+    # }
     conditional_field(:prev, Behaviour.ss()) do
       field(:prev, struct(), struct: Prev, hint: "prevMap")
 
@@ -125,6 +286,23 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     # Ordered Items
     # Domain: any
     # TODO: We should cover a standard properties, because the Ordered Items can be anything no limited
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Sally's notes",
+    #   "type": "OrderedCollection",
+    #   "totalItems": 2,
+    #   "orderedItems": [
+    #     {
+    #       "type": "Note",
+    #       "name": "A Simple Note"
+    #     },
+    #     {
+    #       "type": "Note",
+    #       "name": "Another Simple Note"
+    #     }
+    #   ]
+    # }
     field(:orderedItems, Behaviour.lst(),
       structs: OrderedItems,
       derive: "validate(list, not_empty, not_flatten_empty_item)"
@@ -133,6 +311,23 @@ defmodule MishkaPub.ActivityStream.Type.OrderedCollectionPage do
     # URI: https://www.w3.org/ns/activitystreams#startIndex
     # A non-negative integer value identifying the relative position within the logical view of a strictly ordered collection.
     # Domain:	OrderedCollectionPage
+    # Example:
+    # {
+    #   "@context": "https://www.w3.org/ns/activitystreams",
+    #   "summary": "Page 1 of Sally's notes",
+    #   "type": "OrderedCollectionPage",
+    #   "startIndex": 0,
+    #   "orderedItems": [
+    #     {
+    #       "type": "Note",
+    #       "name": "Density of Water"
+    #     },
+    #     {
+    #       "type": "Note",
+    #       "name": "Air Mattress Idea"
+    #     }
+    #   ]
+    # }
     field(:startIndex, String.t(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=0)"
