@@ -113,13 +113,26 @@ defmodule MishkaPub.ActivityStream.Type.IntransitiveActivity do
     #   ],
     #   "object": "http://example.org/foo"
     # }
-    conditional_field(:actor, Behaviour.ssls()) do
-      field(:actor, struct(), struct: Properties.Actor, hint: "actorMap")
-      field(:actor, Behaviour.lst(), structs: Properties.Actor, hint: "actorList")
+    conditional_field(:actor, Behaviour.ssls(),
+      structs: true,
+      enforce: true,
+      derive: "validate(list, not_empty)"
+    ) do
+      field(:actor, Behaviour.sls(),
+        struct: Properties.Actor,
+        derive: "validate(map, not_empty)",
+        hint: "actorListMap"
+      )
+
+      field(:actor, struct(),
+        structs: Properties.Actor,
+        derive: "validate(list, not_empty)",
+        hint: "actorMap"
+      )
 
       field(:actor, String.t(),
         derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
-        hint: "actor"
+        hint: "actorStringUrl"
       )
     end
 
@@ -145,12 +158,19 @@ defmodule MishkaPub.ActivityStream.Type.IntransitiveActivity do
     #     "name": "John"
     #   }
     # }
-    conditional_field(:target, Behaviour.ss()) do
-      field(:target, struct(), struct: Properties.Target, hint: "targetMap")
+    conditional_field(:target, Behaviour.ssls(),
+      enforce: true,
+      derive: "validate(either=[string, map], not_empty)"
+    ) do
+      field(:target, struct(),
+        struct: Properties.Target,
+        derive: "validate(map, not_empty)",
+        hint: "targetMap"
+      )
 
       field(:target, String.t(),
         derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
-        hint: "target"
+        hint: "targetStringUrl"
       )
     end
 
@@ -200,7 +220,7 @@ defmodule MishkaPub.ActivityStream.Type.IntransitiveActivity do
     #     "content": "Users are favoriting &quot;arduino&quot; by a 33% margin."
     #   }
     # }
-    field(:result, struct(), struct: Properties.Result)
+    field(:result, struct(), struct: Properties.Result, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#origin
     # Describes an indirect object of the activity from which the activity is directed.
@@ -227,7 +247,7 @@ defmodule MishkaPub.ActivityStream.Type.IntransitiveActivity do
     #     "name": "Folder B"
     #   }
     # }
-    field(:origin, struct(), struct: Properties.Origin)
+    field(:origin, struct(), struct: Properties.Origin, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#instrument
     # Identifies one or more objects used (or to be used) in the completion of an Activity.
@@ -244,6 +264,9 @@ defmodule MishkaPub.ActivityStream.Type.IntransitiveActivity do
     #     "name": "Acme Music Service"
     #   }
     # }
-    field(:instrument, struct(), struct: Properties.Instrument)
+    field(:instrument, struct(),
+      struct: Properties.Instrument,
+      derive: "validate(map, not_empty)"
+    )
   end
 end

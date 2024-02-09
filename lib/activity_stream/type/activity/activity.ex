@@ -174,7 +174,10 @@ defmodule MishkaPub.ActivityStream.Type.Activity do
     #     "name": "John"
     #   }
     # }
-    conditional_field(:target, Behaviour.ssls(), derive: "validate(map, not_empty)") do
+    conditional_field(:target, Behaviour.ssls(),
+      enforce: true,
+      derive: "validate(either=[string, map], not_empty)"
+    ) do
       field(:target, struct(),
         struct: Properties.Target,
         derive: "validate(map, not_empty)",

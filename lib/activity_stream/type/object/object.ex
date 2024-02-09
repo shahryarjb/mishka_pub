@@ -49,6 +49,8 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # as a means of grouping objects and activities that share a common originating context or purpose.
     # An example could be all activities relating to a common project or event.
     # Domain: Object
+    # TODO: add conditional field for "@context": {"@language": "en"} lang and url
+    # TODO: Or "@context": ["https://www.w3.org/ns/activitystreams", {"@language": "en"}]
     field(:context, String.t(),
       derive: "sanitize(tag=strip_tags) validate(not_empty_string, url, max_len=160)",
       default: "https://www.w3.org/ns/activitystreams"
@@ -85,7 +87,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     # }
     field(:name, String.t(),
       enforce: true,
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=250, min_len=3)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=100, min_len=3)"
     )
 
     # Owner: :name
@@ -146,7 +148,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     #     "name": "Exampletron 3000"
     #   }
     # }
-    field(:generator, struct(), struct: Properties.Generator)
+    field(:generator, struct(), struct: Properties.Generator, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#icon
     # Indicates an entity that describes an icon for this object.
@@ -168,7 +170,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     #     "height": 16
     #   }
     # }
-    conditional_field(:icon, Behaviour.sls()) do
+    conditional_field(:icon, Behaviour.sls(), derive: "validate(either=[list, map], not_empty)") do
       field(:icon, Behaviour.lst(),
         structs: Properties.Icon,
         derive: "validate(list, not_empty, not_flatten_empty_item)"
@@ -202,7 +204,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     #     }
     #   ]
     # }
-    conditional_field(:image, Behaviour.sls()) do
+    conditional_field(:image, Behaviour.sls(), derive: "validate(either=[list, map], not_empty)") do
       field(:image, Behaviour.lst(),
         structs: Properties.Image,
         derive: "validate(list, not_empty, not_flatten_empty_item)"
@@ -226,7 +228,9 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     #     "content": "What else is there?"
     #   }
     # }
-    conditional_field(:inReplyTo, Behaviour.sls()) do
+    conditional_field(:inReplyTo, Behaviour.sls(),
+      derive: "validate(either=[string, map], not_empty)"
+    ) do
       field(:inReplyTo, struct(),
         struct: Properties.InReplyTo,
         derive: "validate(map, not_empty)"
@@ -252,7 +256,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     #     "units": "m"
     #   }
     # }
-    field(:location, struct(), struct: Properties.Location)
+    field(:location, struct(), struct: Properties.Location, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#preview
     # Identifies an entity that provides a preview of this object.
@@ -273,7 +277,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     #     }
     #   }
     # }
-    field(:preview, struct(), struct: Properties.Preview)
+    field(:preview, struct(), struct: Properties.Preview, derive: "validate(map, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#published
     # The date and time at which the object was published
@@ -311,7 +315,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     #     ]
     #   }
     # }
-    field(:replies, struct(), struct: Properties.Replies)
+    field(:replies, struct(), struct: Properties.Replies, derive: "validate(map, not_empty)")
 
     # URI:	https://www.w3.org/ns/activitystreams#summary
     # A natural language summarization of the object encoded as HTML.
@@ -421,7 +425,9 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     #     }
     #   ]
     # }
-    conditional_field(:url, Behaviour.ssls()) do
+    conditional_field(:url, Behaviour.ssls(),
+      derive: "validate(either=[string, map, list], not_empty)"
+    ) do
       field(:url, Behaviour.lst(),
         structs: Properties.Url,
         derive: "validate(list, not_empty, not_flatten_empty_item)"
@@ -639,6 +645,7 @@ defmodule MishkaPub.ActivityStream.Type.Object do
     #   ]
     # }
     conditional_field(:attributedTo, Behaviour.ls(),
+      enforce: true,
       structs: true,
       derive: "validate(list, not_empty, not_flatten_empty_item)"
     ) do
@@ -675,4 +682,10 @@ defmodule MishkaPub.ActivityStream.Type.Object do
       struct: MishkaPub.ActivityStream.Type.Object
     )
   end
+
+  # TODO: add source
+  # "source": {
+  #   "content": "این مطلب از یک منبع خاص گرفته شده است.",
+  #   "mediaType": "text/plain"
+  # }
 end

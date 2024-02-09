@@ -28,12 +28,12 @@ defmodule ActivityStream.Type.Object.Properties.Preview do
   guardedstruct do
     field(:type, String.t(),
       default: "Video",
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)"
     )
 
     field(:name, String.t(),
       enforce: true,
-      derive: "sanitize(tag=strip_tags) validate(not_empty_string)"
+      derive: "sanitize(tag=strip_tags) validate(not_empty_string, max_len=80, min_len=3)"
     )
 
     # The value associated with "duration" is an ISO 8601 duration string.
@@ -44,6 +44,6 @@ defmodule ActivityStream.Type.Object.Properties.Preview do
         "sanitize(tag=strip_tags) validate(not_empty_string, max_len=10, custom=[MishkaPub.Helper.Extra, is_duration?])"
     )
 
-    field(:url, struct(), structs: true, struct: Url)
+    field(:url, struct(), structs: true, struct: Url, derive: "validate(list, not_empty)")
   end
 end

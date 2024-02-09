@@ -64,7 +64,10 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     #   "mediaType": "text/html",
     #   "name": "Previous"
     # }
-    field(:href, String.t(), derive: "sanitize(tag=strip_tags) validate(url, max_len=160)")
+    field(:href, String.t(),
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(url, max_len=160)"
+    )
 
     # URI: https://www.w3.org/ns/activitystreams#hreflang
     # The target resource pointed to by a Link.
@@ -100,6 +103,7 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     #   "name": "Preview",
     #   "rel": ["canonical", "preview"]
     # }
+    # TODO: this should be selectable between specific types, get from RFC's
     conditional_field(:rel, Behaviour.ls(),
       structs: true,
       derive: "validate(list, not_empty, not_flatten_empty_item)"
@@ -149,6 +153,7 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     #   "height": 100,
     #   "width": 100
     # }
+    # TODO: put domains
     field(:width, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
@@ -165,6 +170,7 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     #   "height": 100,
     #   "width": 100
     # }
+    # TODO: put domains
     field(:height, non_neg_integer(),
       enforce: true,
       derive: "sanitize(tag=strip_tags) validate(integer, min_len=32, max_len=1200)"
@@ -189,6 +195,6 @@ defmodule MishkaPub.ActivityStream.Type.Link do
     #     }
     #   }
     # }
-    field(:preview, struct(), struct: Properties.Preview)
+    field(:preview, struct(), struct: Properties.Preview, derive: "validate(map, not_empty)")
   end
 end

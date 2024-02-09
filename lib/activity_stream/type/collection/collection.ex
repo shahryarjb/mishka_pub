@@ -86,7 +86,7 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     #     }
     #   ]
     # }
-    field(:items, struct(), structs: Properties.Items)
+    field(:items, struct(), structs: Properties.Items, derive: "validate(list, not_empty)")
 
     # URI: https://www.w3.org/ns/activitystreams#current
     # In a paged Collection, indicates the page that contains the most recently updated member items.
@@ -121,8 +121,12 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     #     "http://example.org/posts/3"
     #   ]
     # }
-    conditional_field(:current, Behaviour.ss()) do
-      field(:current, struct(), struct: Properties.Current, hint: "currentMap")
+    conditional_field(:current, Behaviour.ss(), derive: "validate(map, not_empty)") do
+      field(:current, struct(),
+        struct: Properties.Current,
+        derive: "validate(map, not_empty)",
+        hint: "currentMap"
+      )
 
       field(:current, String.t(),
         derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
@@ -154,7 +158,11 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     #   }
     # }
     conditional_field(:first, Behaviour.ss()) do
-      field(:first, struct(), struct: Properties.First, hint: "firstMap")
+      field(:first, struct(),
+        struct: Properties.First,
+        derive: "validate(map, not_empty)",
+        hint: "firstMap"
+      )
 
       field(:first, String.t(),
         derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",
@@ -186,7 +194,11 @@ defmodule MishkaPub.ActivityStream.Type.Collection do
     #   }
     # }
     conditional_field(:last, Behaviour.ss()) do
-      field(:last, struct(), struct: Properties.Last, hint: "lastMap")
+      field(:last, struct(),
+        struct: Properties.Last,
+        derive: "validate(map, not_empty)",
+        hint: "lastMap"
+      )
 
       field(:last, String.t(),
         derive: "sanitize(tag=strip_tags) validate(url, max_len=160)",

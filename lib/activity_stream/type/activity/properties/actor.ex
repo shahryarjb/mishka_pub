@@ -39,7 +39,10 @@ defmodule ActivityStream.Type.Activity.Properties.Actor do
   #   "object": "http://example.org/foo"
   # }
   guardedstruct do
-    field(:id, String.t(), enforce: true, derive: "sanitize(tag=strip_tags) validate(url)")
+    field(:id, String.t(),
+      enforce: true,
+      derive: "sanitize(tag=strip_tags) validate(url, max_len=160)"
+    )
 
     field(:type, String.t(),
       derive: "sanitize(tag=strip_tags) validate(enum=String[#{Enum.join(@types, "::")}])",
