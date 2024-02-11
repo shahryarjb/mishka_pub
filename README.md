@@ -3,7 +3,7 @@ MishkaPub
 
 ## Actor fields
 
-name, preferredUsername, inbox, outbox, followers, following, liked --> enforce
+`name`, `preferredUsername`, `inbox`, `outbox`, `followers`, `following`, `liked` --> enforce
 All list of top types field should be OrderedCollection
 
 --------------------------------------------------------------------
@@ -18,14 +18,14 @@ All list of top types field should be OrderedCollection
 --------------------------------------------------------------------
 - A client to server protocol, or "Social API"
 - A server to server protocol, or "Federation Protocol"
-- application/ld+json;
-- application/ld+json; profile="https://www.w3.org/ns/activitystreams"
+- `application/ld+json`;
+- `application/ld+json; profile="https://www.w3.org/ns/activitystreams"`
 
 - Location: https://dustycloud.org/likes/345 --->
 - user should put the full url in location header when a activity is transient
-- bto / bcc ---> should be deleted from activity but should be delivered
-- to, bto, cc, bcc, audience ----> server should manage
-- Add, Remove --> activity should have target
+- `bto` / `bcc` ---> should be deleted from activity but should be delivered
+- `to`, `bto`, `cc`, `bcc`, `audience` ----> server should manage
+- `Add`, `Remove` --> activity should have target
 - If a activity is created SHOULD be copied onto the object's attributedTo (for Create)
 
 ----------------------------------------------------------------------
@@ -93,25 +93,25 @@ Side effect, the server for any reson maybe not give the accses for deleting
 
 ----------------------------------------------------------------------
 
-- Extera activityes
-- Accept and Reject,
-- Arrive and Leave,
-- Join and Leave,
-- Create and Delete,
-- Like and Dislike
+## Extera activityes
+- `Accept` and `Reject`,
+- `Arrive` and `Leave`,
+- `Join` and `Leave`,
+- `Create` and `Delete`,
+- `Like` and `Dislike`
 
 ----------------------------------------------------------------------
 
-- For undoing: Create --> Delete, Add ---> Remove
+- For Undoing: `Create` --> `Delete`, `Add` ---> `Remove`
 - Some recurse object and edit should have a limition
 
 ----------------------------------------------------------------------
 ## For uploading media
 
-https://www.w3.org/wiki/SocialCG/ActivityPub/MediaUpload
-Content-Disposition: form-data; name="file"; filename="wireworld.webm"
-Content-Type: video/webm
-202 Accepted
+- `https://www.w3.org/wiki/SocialCG/ActivityPub/MediaUpload`
+- `Content-Disposition: form-data; name="file"; filename="wireworld.webm"`
+- `Content-Type: video/webm`
+----> 202 Accepted
 
 ---
 Server should prevent oversized Collections from client, must have a limition and rate limit
