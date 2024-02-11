@@ -1,29 +1,32 @@
 MishkaPub
 
 
+## Actor fields
+
 name, preferredUsername, inbox, outbox, followers, following, liked --> enforce
 All list of top types field should be OrderedCollection
 
 --------------------------------------------------------------------
-Sending email
-User's feed is its inbox with Get
-User's profile is its outbox for other poaple with Get
-Send message to someone or public is user'outbox with POST
-Then server sends the user's outbox request to the poaple inbox
-If user want to see another users profile should GET their outbox
+## Sending email
+
+- User's feed is its inbox with Get
+- User's profile is its outbox for other poaple with Get
+- Send message to someone or public is user'outbox with POST
+- Then server sends the user's outbox request to the poaple inbox
+- If user want to see another users profile should GET their outbox
 
 --------------------------------------------------------------------
-A client to server protocol, or "Social API"
-A server to server protocol, or "Federation Protocol"
-application/ld+json;
-application/ld+json; profile="https://www.w3.org/ns/activitystreams"
+- A client to server protocol, or "Social API"
+- A server to server protocol, or "Federation Protocol"
+- application/ld+json;
+- application/ld+json; profile="https://www.w3.org/ns/activitystreams"
 
-Location: https://dustycloud.org/likes/345 --->
-user should put the full url in location header when a activity is transient
-bto / bcc ---> should be deleted from activity but should be delivered
-to, bto, cc, bcc, audience ----> server should manage
-Add, Remove --> activity should have target
-If a activity is created SHOULD be copied onto the object's attributedTo (for Create)
+- Location: https://dustycloud.org/likes/345 --->
+- user should put the full url in location header when a activity is transient
+- bto / bcc ---> should be deleted from activity but should be delivered
+- to, bto, cc, bcc, audience ----> server should manage
+- Add, Remove --> activity should have target
+- If a activity is created SHOULD be copied onto the object's attributedTo (for Create)
 
 ----------------------------------------------------------------------
 When a user send a request to his outbox for creating an object can be like:
@@ -67,7 +70,7 @@ for example mallory, so we should add activity properties automaticly and delete
 ```
 ----------------------------------------------------------------------
 
-Updating, for deleteing one field user should send `json null` this exeption for activitypub --> client to server
+- Updating, for deleteing one field user should send `json null` this exeption for activitypub --> client to server
 
 ----------------------------------------------------------------------
 Deleting, If an object deleted and a user request it, server should response HTTP 410, if there is not object at first server
@@ -90,20 +93,21 @@ Side effect, the server for any reson maybe not give the accses for deleting
 
 ----------------------------------------------------------------------
 
-Extera activityes
-Accept and Reject,
-Arrive and Leave,
-Join and Leave,
-Create and Delete,
-Like and Dislike
+- Extera activityes
+- Accept and Reject,
+- Arrive and Leave,
+- Join and Leave,
+- Create and Delete,
+- Like and Dislike
 
 ----------------------------------------------------------------------
 
-For undoing: Create --> Delete, Add ---> Remove
-Some recurse object and edit should have a limition
+- For undoing: Create --> Delete, Add ---> Remove
+- Some recurse object and edit should have a limition
 
 ----------------------------------------------------------------------
-For uploading media
+## For uploading media
+
 https://www.w3.org/wiki/SocialCG/ActivityPub/MediaUpload
 Content-Disposition: form-data; name="file"; filename="wireworld.webm"
 Content-Type: video/webm
