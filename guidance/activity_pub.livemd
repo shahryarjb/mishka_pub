@@ -37,6 +37,7 @@ graph TD;
 ## User registration
 
 This section requires that a user be saved in the website's database. This information is referred to as an `actor` in the system, and it is not restricted to human registration; in the system, we can also register `software` or an external system as `actors`.
+
 **Path**: `https://keept.mishka.life/auth/register`
 
 <!-- livebook:{"break_markdown":true} -->
@@ -49,6 +50,7 @@ graph TD;
   id-->user_name_link;
   user_name_link-->auto_create_from_unique_username;
   Create-->type;
+  Create-->email;
   Create-->summary;
   summary-->text;
   Create-->name;
