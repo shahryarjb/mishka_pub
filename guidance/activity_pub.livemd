@@ -1,1 +1,85 @@
 # ActivityPub and Based schema of MishkaKeept
+
+```elixir
+Mix.install([
+  {:mishka_developer_tools, github: "mishka-group/mishka_developer_tools"},
+  # Optional dependencies
+  {:html_sanitize_ex, "~> 1.4.3"},
+  {:email_checker, "~> 0.2.4"},
+  {:ex_url, "~> 2.0"},
+  {:ex_phone_number, "~> 0.4.3"},
+  {:ecto_sql, "~> 3.11"},
+  {:postgrex, "~> 0.17.2"}
+])
+```
+
+## Basic information to get started
+
+In this section, we do not completely implement ActivityPub. Instead, a portion of the protocol's notion is addressed based on the requirements of each component of the time manager system.
+It should be emphasized that each section should be treated as an event, with a type indicating the type of action. Please utilize the following types.
+
+<!-- livebook:{"break_markdown":true} -->
+
+<!-- Learn more at https://mermaid-js.github.io/mermaid -->
+
+```mermaid
+graph TD;
+  Types-->Create;
+  Types-->Read;
+  Types-->Update;
+  Types-->Delete;
+```
+
+## User registration
+
+This section requires that a user be saved in the website's database. This information is referred to as an `actor` in the system, and it is not restricted to human registration; in the system, we can also register `software` or an external system as `actors`.
+
+<!-- livebook:{"break_markdown":true} -->
+
+<!-- Learn more at https://mermaid-js.github.io/mermaid -->
+
+```mermaid
+graph TD;
+  Create-->id;
+  id-->user_name_link;
+  user_name_link-->auto_create_from_unique_username;
+  Create-->type;
+  Create-->summary;
+  summary-->text;
+  Create-->name;
+  name-->string;
+  Create-->preferredUsername;
+  preferredUsername-->user_name;
+  user_name-->unique;
+  Create-->user_endpoints;
+  user_endpoints-->links;
+  links-->inbox;
+  links-->outbox;
+  links-->followers;
+  links-->following;
+  links-->liked;
+  type-->Application;
+  type-->Group;
+  type-->Organization;
+  type-->Person;
+  type-->Service;
+```
+
+```elixir
+# Add an actor
+ActivityPub.User.Create.builder(%{
+  id: "https://keept.mishka.life/shahryar",
+  # enforce field
+  name: "Shahryar",
+  # enforce field
+  preferredUsername: "shahryar",
+  # enforce field
+  type: "Person",
+  # optional field
+  summary: "I am an Elixir full-stack developer."
+})
+```
+
+## Get user data
+
+
