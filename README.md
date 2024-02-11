@@ -1,5 +1,4 @@
-MishkaPub
-
+# MishkaPub
 
 ## Actor fields
 
@@ -21,7 +20,7 @@ All list of top types field should be OrderedCollection
 - `application/ld+json`;
 - `application/ld+json; profile="https://www.w3.org/ns/activitystreams"`
 
-- Location: https://dustycloud.org/likes/345 --->
+- `Location: https://dustycloud.org/likes/345`
 - user should put the full url in location header when a activity is transient
 - `bto` / `bcc` ---> should be deleted from activity but should be delivered
 - `to`, `bto`, `cc`, `bcc`, `audience` ----> server should manage
