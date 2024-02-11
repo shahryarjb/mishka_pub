@@ -28,11 +28,16 @@ graph TD;
   Types-->Read;
   Types-->Update;
   Types-->Delete;
+  Pipeline-->builder;
+  builder-->sanitizing;
+  sanitizing-->validating;
+  validating-->Transfer_to_Changeset;
 ```
 
 ## User registration
 
 This section requires that a user be saved in the website's database. This information is referred to as an `actor` in the system, and it is not restricted to human registration; in the system, we can also register `software` or an external system as `actors`.
+**Path**: `https://keept.mishka.life/auth/register`
 
 <!-- livebook:{"break_markdown":true} -->
 
