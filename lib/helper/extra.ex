@@ -8,4 +8,17 @@ defmodule MishkaPub.Helper.Extra do
   end
 
   def is_duration?(_value), do: false
+
+  def validate_username(:preferredUsername, username) when is_binary(username) do
+    regex = ~r/^[a-zA-Z0-9_]+$/
+
+    if Regex.match?(regex, username),
+      do: {:ok, :preferredUsername, username},
+      else: validate_username(:preferredUsername, :error)
+  end
+
+  def validate_username(:preferredUsername, _username),
+    do:
+      {:error, :preferredUsername,
+       "Invalid username. Username can only contain English letters (a-z), numbers (0-9), and underscores (_)"}
 end
