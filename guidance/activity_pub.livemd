@@ -15,8 +15,12 @@ Mix.install([
 
 ## Basic information to get started
 
-In this section, we do not completely implement ActivityPub. Instead, a portion of the protocol's notion is addressed based on the requirements of each component of the time manager system.
+In this section, we do not completely implement `ActivityPub`. Instead, a portion of the protocol's notion is addressed based on the requirements of each component of the time manager system.
 It should be emphasized that each section should be treated as an event, with a type indicating the type of action. Please utilize the following types.
+
+##### Notes
+
+> **Based on the integration of the structure, we also focus the structure and initial validation of auth in the `ActivityPub` itself. All storage in the database after the validation and sanitization stage must be done in the main project itself**
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -73,7 +77,7 @@ graph TD;
 ```
 
 ```elixir
-# Add an actor
+# Add an actor for user registration
 ActivityPub.User.Create.builder(%{
   id: "https://keept.mishka.life/shahryar",
   # enforce field
@@ -82,6 +86,7 @@ ActivityPub.User.Create.builder(%{
   preferredUsername: "shahryar",
   # enforce field
   type: "Person",
+  mobile: "00989368094936",
   # optional field
   summary: "I am an Elixir full-stack developer."
 })
