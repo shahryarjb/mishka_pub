@@ -1,5 +1,10 @@
 # MishkaPub
 
+> ### This was a practice project to implement ActivityPub as well as ActivityStream, which led to the creation of the [GuardedStruct](https://github.com/mishka-group/mishka_developer_tools/blob/master/guidance/guarded-struct.livemd) macro. This project will be archived, but it can have a good educational load to start with
+
+
+--------
+
 ## Actor fields
 
 `name`, `preferredUsername`, `inbox`, `outbox`, `followers`, `following`, `liked` --> enforce
